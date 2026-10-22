@@ -11,3 +11,7 @@ export function readFile(from: string) {
     asJSON: <T extends any>() => JSON.parse(fileContent) as T
   }
 }
+
+export function copyDir(fromPath: string, toPath: string) {
+  fs.cpSync(fromPath, toPath, { recursive: true })
+}

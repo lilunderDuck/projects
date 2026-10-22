@@ -1,5 +1,5 @@
 import fs from "node:fs"
-import { isFileOrDirExist, readFile, ShellExec } from "../utils"
+import { copyDir, isFileOrDirExist, readFile, ShellExec } from "../utils"
 import type { IProjectMetadata, IProjectStat } from "../data"
 import { LICENSE_REGISTRY } from "../data/licenseRegistry"
 
@@ -27,7 +27,7 @@ export async function scanForProjectCandidate(basePath: string) {
     }
 
     const PROJECT_LONG_DESCRIPTION_PATH = `${DUCK_METADATA_FOLDER}/description.md` as const
-    // const PROJECT_ASSETS_FOLDER = `${DUCK_METADATA_FOLDER}/assets` as const
+    const PROJECT_ASSETS_FOLDER = `${DUCK_METADATA_FOLDER}/assets` as const
 
     const projectMetadata = readFile(PROJECT_METADATA_PATH).asJSON<IProjectMetadata>()
     const projectLongDescriptionContent = readFile(PROJECT_LONG_DESCRIPTION_PATH).asText()
@@ -42,6 +42,8 @@ export async function scanForProjectCandidate(basePath: string) {
       // @ts-ignore
       url: LICENSE_REGISTRY.getOrElseThrow(it.name?.toLowerCase()!),
     })) : undefined
+
+    copyDir(PROJECT_ASSETS_FOLDER, "./docs/assets")
 
     canidate.push(newData)
   }
