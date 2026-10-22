@@ -1,3 +1,3 @@
 export * from "./data"
-export * from "./registry"
+export * from "./projectRegistry"
 export * from "./buildDate"

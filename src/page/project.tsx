@@ -34,7 +34,7 @@ const page__headerImgBorder = css`
   border: 2px solid var(--overlay0);
 `
 
-const page__headerProjectNameWorkaround = css`
+const page__title = css`
   font-size: 2.3rem;
   font-weight: bold;
 `
@@ -88,7 +88,7 @@ export default function ProjectPage(props: IProjectStat) {
         {props.coverImage && <ImageOneItemView class={page__headerImgBorder} images={[props.coverImage]} />}
         <div class={page__headerShadow} />
         <div class={page__titleWrap}>
-          <span class={page__headerProjectNameWorkaround}>{props.title}</span>
+          <span class={page__title}>{props.title}</span>
           <MarkdownText>
             {props.description}
           </MarkdownText>
@@ -97,7 +97,7 @@ export default function ProjectPage(props: IProjectStat) {
       <main class={page__main}>
         <ProjectSection name="Basically">
           <MarkdownText>
-            {props.longDescription.join('\n\n')}
+            {props.longDescription}
           </MarkdownText>
         </ProjectSection>
         {props.previewImages && (

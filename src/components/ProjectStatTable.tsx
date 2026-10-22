@@ -47,13 +47,13 @@ export function ProjectStatTable(props: IProjectStat) {
   const TABLE_CATEGORY_ROW = [
     {
       name: "Kind of project",
-      stuff: <Tag bgColor={PROJECT_TYPE_COLOR_MAPPING[props.type]}>{props.type}</Tag>
+      stuff: <Tag bgColor={PROJECT_TYPE_COLOR_MAPPING.getOrElseThrow(props.type)}>{props.type}</Tag>
     },
     {
       name: "Project status",
       stuff: <>
-        <Tag bgColor={PROJECT_STATUS_REGISTRY[props.status].color}>{props.status}</Tag>
-        <p>{PROJECT_STATUS_REGISTRY[props.status].description}</p>
+        <Tag bgColor={PROJECT_STATUS_REGISTRY.getOrElseThrow(props.status).color}>{props.status}</Tag>
+        <p>{PROJECT_STATUS_REGISTRY.getOrElseThrow(props.status).description}</p>
       </>
     },
     {

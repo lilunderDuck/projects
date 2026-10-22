@@ -1,0 +1,12 @@
+{
+  "title": "Duck's project index",
+  "id": "duck-project-index",
+  "description": "What project am I currently doing?",
+  "type": "public",
+  "status": "active",
+  "licence": [{
+    "name": "MIT",
+    "why": ""
+  }],
+  "icon": "missing_no.png"
+}

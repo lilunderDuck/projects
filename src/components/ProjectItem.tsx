@@ -51,7 +51,7 @@ const item__fakeLink = css`
 
 export function ProjectItem(props: IProjectStat & { index: number }) {
   return (
-    <li class={`${item__root} ${props.disabled ? item__disabled : ""}`.trim()}>
+    <li class={item__root}>
       <div class={item__index}>
         {props.index}
       </div>
@@ -61,18 +61,14 @@ export function ProjectItem(props: IProjectStat & { index: number }) {
       <div>
         <div class={item__titleWrap}>
           <h2>
-            {props.disabled ? (
-              <span class={item__fakeLink}>{props.title}</span>
-            ) : (
-              <a href={props.disabled ? undefined : `./${props.id}.html`}>
-                {props.title}
-              </a>
-            )}
+            <a href={`./${props.id}.html`}>
+              {props.title}
+            </a>
           </h2>
-          <Tag bgColor={PROJECT_TYPE_COLOR_MAPPING[props.type]}>
+          <Tag bgColor={PROJECT_TYPE_COLOR_MAPPING.getOrElseThrow(props.type)}>
             {props.type}
           </Tag>
-          <Tag bgColor={PROJECT_STATUS_REGISTRY[props.status].color}>
+          <Tag bgColor={PROJECT_STATUS_REGISTRY.getOrElseThrow(props.status).color}>
             {props.status}
           </Tag>
           {props.id.includes("toast") && (

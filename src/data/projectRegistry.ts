@@ -1,9 +1,12 @@
+import { createRegistry } from "../utils"
 import type { IProjectStat } from "./data"
 
-export const PROJECT_STATUS_REGISTRY: Record<IProjectStat["status"], {
+type ProjectStatusRegistry = Record<IProjectStat["status"], {
   color: string
   description: string
-}> = {
+}>
+
+export const PROJECT_STATUS_REGISTRY = createRegistry<ProjectStatusRegistry>({
   active: {
     color: "var(--green)",
     description: "mint_duck is currently active on maintaining this"
@@ -19,10 +22,10 @@ export const PROJECT_STATUS_REGISTRY: Record<IProjectStat["status"], {
   stopped: {
     color: "var(--red)",
     description: "mint_duck has stopped maintaining this project (due to motivation loss for example)"
-  },
-}
+  }
+})
 
-export const PROJECT_TYPE_COLOR_MAPPING: Record<IProjectStat["type"], string> = {
+export const PROJECT_TYPE_COLOR_MAPPING = createRegistry<Record<IProjectStat["type"], string>>({
   private: "var(--mauve)",
   public: "var(--flamingo)"
-}
+})
