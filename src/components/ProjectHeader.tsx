@@ -44,6 +44,7 @@ const header__titleWrap = css`
 const header__bannerImage = css`
   width: 100%;
   height: 100%;
+  object-fit: cover;
 `
 
 export function ProjectHeader(props: IProjectStat) {
