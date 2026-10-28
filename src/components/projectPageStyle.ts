@@ -3,7 +3,7 @@ import { css } from "../../core";
 export const page__rootStyle = css`
   user-select: none;
   overflow-y: auto;
-  & p, & ul, & table {
+  & p, & ul, & table, & pre {
     font-size: 1.5rem;
   }
 
