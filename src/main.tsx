@@ -4,6 +4,7 @@ import { scanForProjectCandidate } from "./generated"
 // ...
 import HomePage from "./page"
 import ProjectPage from "./page/project"
+import { copyDir, ensureDirExist } from "./utils"
 
 const projectCanidate = await scanForProjectCandidate("D:/projects")
 console.log("Found", projectCanidate.length, "canidate, time to generate some pages")
@@ -16,5 +17,12 @@ render((
 ), "./docs/index.html")
 
 for (const stat of projectCanidate) {
-  render(<ProjectPage {...stat} />, `./docs/${stat.id}.html`)
+  const outputFolder = `./docs/${stat.id}`
+  ensureDirExist(outputFolder)
+  ensureDirExist(`${outputFolder}/assets`)
+  if (stat.assetsPath) {
+    copyDir(stat.assetsPath, `${outputFolder}/assets`)
+  }
+  
+  render(<ProjectPage {...stat} />, `./docs/${stat.id}/index.html`)
 }

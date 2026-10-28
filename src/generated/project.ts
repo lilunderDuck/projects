@@ -1,66 +1,96 @@
 import fs from "node:fs"
-import { copyDir, isFileOrDirExist, readFile, ShellExec } from "../utils"
+import { getEverythingFrom, isFileOrDirExist, readFile, ShellExec } from "../utils"
 import type { IProjectMetadata, IProjectStat } from "../data"
 import { LICENSE_REGISTRY } from "../data/licenseRegistry"
 
-interface IProjectCandiate {
-  metadata: IProjectMetadata
-  longDescription: string | null
-  assetsPath: string | null
-}
-
 export async function scanForProjectCandidate(basePath: string) {
-  const PROJECTS_ON_BASE_PATH = fs.readdirSync(basePath)
+  console.log("Scanning for duck's project canidate at", basePath) // not a (neo)forge reference :)
+
+  const allProjectsName = fs.readdirSync(basePath)
   const canidate = [] as IProjectStat[]
-  for (const projectFolderName of PROJECTS_ON_BASE_PATH) {
+
+  for (const projectFolderName of allProjectsName) {
     const PROJECT_BASE_PATH = `${basePath}/${projectFolderName}`
-    const DUCK_METADATA_FOLDER = `${PROJECT_BASE_PATH}/.duck` as const
-    if (!isFileOrDirExist(DUCK_METADATA_FOLDER)) {
+    const DOT_DUCK_FOLDER = `${PROJECT_BASE_PATH}/.duck` as const
+    if (!isFileOrDirExist(DOT_DUCK_FOLDER)) {
       console.log(".duck metadata folder does not exist for", PROJECT_BASE_PATH, ". Skipping...")
       continue
     }
-    
-    const PROJECT_METADATA_PATH = `${DUCK_METADATA_FOLDER}/metadata.json` as const
-    if (!isFileOrDirExist(PROJECT_METADATA_PATH)) {
-      console.log("missing project metadata.json on .duck folder at", PROJECT_BASE_PATH, ". Skipping...")
-      continue
+
+    let assetsPath: string | null = null
+    if (isFileOrDirExist(`${DOT_DUCK_FOLDER}/assets`)) {
+      assetsPath = `${DOT_DUCK_FOLDER}/assets`
     }
 
-    const PROJECT_LONG_DESCRIPTION_PATH = `${DUCK_METADATA_FOLDER}/description.md` as const
-    const PROJECT_ASSETS_FOLDER = `${DUCK_METADATA_FOLDER}/assets` as const
+    const projectMetadata = readProjectMetadata(DOT_DUCK_FOLDER)
+    if (projectMetadata === null) continue
 
-    const projectMetadata = readFile(PROJECT_METADATA_PATH).asJSON<IProjectMetadata>()
-    const projectLongDescriptionContent = readFile(PROJECT_LONG_DESCRIPTION_PATH).asText()
-    const newData: IProjectStat = {
+    const stat: IProjectStat = {
       ...projectMetadata,
-      totalCommits: await getTotalCommitFromProject(PROJECT_BASE_PATH),
-      longDescription: projectLongDescriptionContent,
+      longDescription: getProjectLongDescription(DOT_DUCK_FOLDER),
+      pages: parseOtherMarkdownPage(DOT_DUCK_FOLDER),
+      totalCommits: await getTotalCommits(PROJECT_BASE_PATH),
+      assetsPath
     }
 
-    newData.licence = projectMetadata.licence ? projectMetadata.licence.map(it => ({
-      ...it,
-      // @ts-ignore
-      url: LICENSE_REGISTRY.getOrElseThrow(it.name?.toLowerCase()!),
-    })) : undefined
+    appendLicenceUrl(stat, projectMetadata)
 
-    copyDir(PROJECT_ASSETS_FOLDER, "./docs/assets")
-
-    canidate.push(newData)
+    canidate.push(stat)
   }
 
   return canidate
 }
 
-function getTotalCommitFromProject(projectPath: string) {
-  return new ShellExec<number>(["cd", projectPath, "&&", "git", "rev-list", "--count", "HEAD"])
+function parseOtherMarkdownPage(dotDuckFolderPath: string) {
+  return getEverythingFrom(dotDuckFolderPath)
+    .filter(fileName => fileName.endsWith(".md"))
+    .map(fileName => ({
+      path: `${dotDuckFolderPath}/${fileName}`,
+      content: readFile(`${dotDuckFolderPath}/${fileName}`).asText()
+    }))
+  // ...
+}
+
+
+function readProjectMetadata(dotDuckFolderPath: string) {
+  const PROJECT_METADATA_PATH = `${dotDuckFolderPath}/metadata.json` as const
+  if (!isFileOrDirExist(PROJECT_METADATA_PATH)) {
+    console.log("missing project metadata.json on .duck folder at", PROJECT_METADATA_PATH, ". Skipping...")
+    return null
+  }
+
+  return readFile(PROJECT_METADATA_PATH).asJSON<IProjectMetadata>()
+}
+
+function getProjectLongDescription(dotDuckFolderPath: string) {
+  const PROJECT_LONG_DESCRIPTION_PATH = `${dotDuckFolderPath}/description.md` as const
+  try {
+    return readFile(PROJECT_LONG_DESCRIPTION_PATH).asText()
+  } catch(error) {
+    console.log("Could not get the project long description from:", PROJECT_LONG_DESCRIPTION_PATH)
+    return ''
+  }
+}
+
+function appendLicenceUrl(dataRef: IProjectStat, metadata: IProjectMetadata) {
+  dataRef.licence = metadata.licence ? metadata.licence.map(it => ({
+    ...it,
+    // @ts-ignore
+    url: LICENSE_REGISTRY.getOrElseThrow(it.name?.toLowerCase()!),
+  })) : undefined
+}
+
+async function getTotalCommits(projectFolderPath: string) {
+  return new ShellExec<number>(["cd", projectFolderPath, "&&", "git", "rev-list", "--count", "HEAD"])
     .getAsInt()
     .orElseDefault(0)
     .executeDangerously()
   // ...
 }
 
-async function getLastCommitMessages(projectPath: string, amount: number) {
-  const output = await new ShellExec<string>(["cd", projectPath, "&&", "git", "log", "--oneline", "-n", amount])
+// TODO:
+async function getLastCommitMessages(projectFolderPath: string, amount: number) {
+  const output = await new ShellExec<string>(["cd", projectFolderPath, "&&", "git", "log", "--oneline", "-n", amount])
     .orElseDefault('')
     .executeDangerously()
   // ...

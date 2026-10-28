@@ -15,3 +15,11 @@ export function readFile(from: string) {
 export function copyDir(fromPath: string, toPath: string) {
   fs.cpSync(fromPath, toPath, { recursive: true })
 }
+
+export function getEverythingFrom<const T extends string>(somePath: T) {
+  return fs.readdirSync(somePath, { recursive: true }) as string[]
+}
+
+export function ensureDirExist<const T extends string>(path: T) {
+  fs.mkdirSync(path, { recursive: true })
+}

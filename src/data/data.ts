@@ -22,4 +22,6 @@ export interface IProjectStat extends Omit<IProjectMetadata, "licence"> {
     url?: string
     why?: string
   }[]
+  pages: { path: string, content: string }[]
+  assetsPath: string | null
 }
