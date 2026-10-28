@@ -1,4 +1,4 @@
-import { render } from "../core"
+import { css, render, type IRenderHtmlOption } from "../core"
 import { CURRENT_BUILD_DATE } from "./data"
 import { scanForProjectCandidate } from "./generated"
 // ...
@@ -9,12 +9,22 @@ import { copyDir, ensureDirExist } from "./utils"
 const projectCanidate = await scanForProjectCandidate("D:/projects")
 console.log("Found", projectCanidate.length, "canidate, time to generate some pages")
 
+const GLOBAL_STYLE = css`
+  
+`
+
+const TITLE = "Duck's project index"
+
 render((
   <HomePage 
     buildDate={CURRENT_BUILD_DATE} 
     projectList={projectCanidate} 
   />
-), "./docs/index.html")
+), "./docs/index.html", {
+  title: "Duck's project index",
+  description: "",
+  css: GLOBAL_STYLE
+})
 
 for (const stat of projectCanidate) {
   const outputFolder = `./docs/${stat.id}`
@@ -24,7 +34,12 @@ for (const stat of projectCanidate) {
     copyDir(stat.assetsPath, `${outputFolder}/assets`)
   }
   
-  render(<ProjectPage {...stat} />, `./docs/${stat.id}/index.html`)
+  render(<ProjectPage {...stat} />, `./docs/${stat.id}/index.html`, {
+    title: TITLE,
+    description: "",
+    css: GLOBAL_STYLE
+  })
+
   for (const subPage of stat.pages) {
     console.log(subPage.path)
   }
