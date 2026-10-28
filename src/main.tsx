@@ -12,8 +12,13 @@ import { copyDir, ensureDirExist } from "./utils"
 const projectCanidate = await scanForProjectCandidate("D:/projects")
 console.log("Found", projectCanidate.length, "canidate, time to generate some pages")
 
-const GLOBAL_STYLE = css`
-  
+const GLOBAL_STYLE = `
+  @keyframes showButton {
+    to {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
 `
 
 const TITLE = "Duck's project index"
