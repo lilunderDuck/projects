@@ -55,7 +55,7 @@ export function ProjectItem(props: IProjectStat & { index: number }) {
       <div class={item__index}>
         {props.index}
       </div>
-      <img class={item__icon} draggable={false} src={`./assets/icons/${props.icon}`} alt="">
+      <img class={item__icon} draggable={false} src={`./assets/${props.icon}`} alt="">
         {/* ... */}
       </img>
       <div>
