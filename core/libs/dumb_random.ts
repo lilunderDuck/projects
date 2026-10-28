@@ -166,7 +166,7 @@ export function createWordSlidingRandomizer(source: string[] = splitAndClean(SRC
  * @see {@link splitAndClean()} - utility function to clean up the source set.
  */
 export function createSingleWordSlidingRandomizer(
-  source: string[] = splitAndClean(SRC_MISSILE_DEFAULT.replaceAll(".", ""))
+  source: string[] = splitAndClean(`${SRC_MISSILE_DEFAULT} ${SRC_NEOFORGE_DOCS_SET} ${SRC_CAT_SET}`.replaceAll(".", ""))
 ) {
   const generated = new Set<string>()
   const SOURCE_MAX_LENGTH = source.length
