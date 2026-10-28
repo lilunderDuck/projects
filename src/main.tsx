@@ -25,4 +25,7 @@ for (const stat of projectCanidate) {
   }
   
   render(<ProjectPage {...stat} />, `./docs/${stat.id}/index.html`)
+  for (const subPage of stat.pages) {
+    console.log(subPage.path)
+  }
 }

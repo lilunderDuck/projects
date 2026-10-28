@@ -43,6 +43,9 @@ export async function scanForProjectCandidate(basePath: string) {
 
 function parseOtherMarkdownPage(dotDuckFolderPath: string) {
   return getEverythingFrom(dotDuckFolderPath)
+    // main page, must exclude that out
+    .filter(thisThing => !thisThing.includes("description.md"))
+    // otherwise grab every markdown file to generate sub-page for each project
     .filter(fileName => fileName.endsWith(".md"))
     .map(fileName => ({
       path: `${dotDuckFolderPath}/${fileName}`,
