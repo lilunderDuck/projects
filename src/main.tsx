@@ -13,10 +13,12 @@ const projectCanidate = await scanForProjectCandidate("D:/projects")
 console.log("Found", projectCanidate.length, "canidate, time to generate some pages")
 
 const GLOBAL_STYLE = `
-  @keyframes showButton {
+  @keyframes dot_grid_move {
+    from {
+      background-position: 0 0;
+    }
     to {
-      opacity: 1;
-      visibility: visible;
+      background-position: 40px -40px;
     }
   }
 `

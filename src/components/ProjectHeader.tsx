@@ -41,6 +41,15 @@ const header__titleWrap = css`
   padding-bottom: 30px;
 `
 
+const header__missingBannerImage = css`
+  background-size: 40px 40px;
+  background-image: radial-gradient(var(--surface1) 2px, transparent 2px);
+  width: 100%;
+  height: 100%;
+  background-color: var(--mantle);
+  animation: dot_grid_move 5s linear infinite;
+`
+
 const header__bannerImage = css`
   width: 100%;
   height: 100%;
@@ -75,7 +84,9 @@ export function ProjectHeader(props: IProjectStat) {
         Back
       </a>
       <Show when={props.banner} fallback={
-        <div class={`${header__bannerImage} ${header__headerImgBorder}`} />
+        <div class={`${header__bannerImage} ${header__headerImgBorder}`}>
+          <div class={header__missingBannerImage} />
+        </div>
       }>
         <img class={`${header__bannerImage} ${header__headerImgBorder}`} src={`./assets/${props.banner}`} draggable={false} />
       </Show>
