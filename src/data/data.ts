@@ -12,6 +12,7 @@ export interface IProjectMetadata {
     why?: string
   }[]
   icon: string
+  banner?: string
 }
 
 export interface IProjectStat extends Omit<IProjectMetadata, "licence"> {

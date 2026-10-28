@@ -1,4 +1,4 @@
-import { css, MarkdownText } from "../../core"
+import { css, MarkdownText, Show } from "../../core"
 import type { IProjectStat } from "../data"
 import { ImageOneItemView } from "./ImageItemsView"
 
@@ -41,10 +41,19 @@ const header__titleWrap = css`
   padding-bottom: 30px;
 `
 
+const header__bannerImage = css`
+  width: 100%;
+  height: 100%;
+`
+
 export function ProjectHeader(props: IProjectStat) {
   return (
     <header class={header__root}>
-      {props.coverImage && <ImageOneItemView class={header__headerImgBorder} images={[props.coverImage]} />}
+      <Show when={props.banner} fallback={
+        <div class={`${header__bannerImage} ${header__headerImgBorder}`} />
+      }>
+        <img class={`${header__bannerImage} ${header__headerImgBorder}`} src={`./assets/${props.banner}`} draggable={false} />
+      </Show>
       <div class={header__headerShadow} />
       <div class={header__titleWrap}>
         <span class={header__title}>{props.title}</span>

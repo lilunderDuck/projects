@@ -15,15 +15,6 @@ const item__root = css`
   }
 `
 
-const item__disabled = css`
-  opacity: 0.5;
-  cursor: not-allowed;
-
-  &:hover {
-    background-color: transparent;
-  }
-`
-
 const item__index = css`
   font-size: 2rem;
   width: 30px;
@@ -45,23 +36,19 @@ const item__titleWrap = css`
   margin-bottom: 5px;
 `
 
-const item__fakeLink = css`
-  color: var(--sapphire);
-`
-
 export function ProjectItem(props: IProjectStat & { index: number }) {
   return (
     <li class={item__root}>
       <div class={item__index}>
         {props.index}
       </div>
-      <img class={item__icon} draggable={false} src={`./assets/${props.icon}`} alt="">
+      <img class={item__icon} draggable={false} src={`./${props.id}/assets/${props.icon}`} alt="">
         {/* ... */}
       </img>
       <div>
         <div class={item__titleWrap}>
           <h2>
-            <a href={`./${props.id}.html`}>
+            <a href={`./${props.id}/index.html`}>
               {props.title}
             </a>
           </h2>

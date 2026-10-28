@@ -1,9 +1,12 @@
+import path from "node:path"
+// ...
 import { css, render, type IRenderHtmlOption } from "../core"
 import { CURRENT_BUILD_DATE } from "./data"
 import { scanForProjectCandidate } from "./generated"
 // ...
 import HomePage from "./page"
 import ProjectPage from "./page/project"
+import ProjectSubpage from "./page/project-subpage"
 import { copyDir, ensureDirExist } from "./utils"
 
 const projectCanidate = await scanForProjectCandidate("D:/projects")
@@ -33,14 +36,21 @@ for (const stat of projectCanidate) {
   if (stat.assetsPath) {
     copyDir(stat.assetsPath, `${outputFolder}/assets`)
   }
-  
-  render(<ProjectPage {...stat} />, `./docs/${stat.id}/index.html`, {
+
+  const pageOptions = {
     title: TITLE,
     description: "",
-    css: GLOBAL_STYLE
-  })
+    css: GLOBAL_STYLE,
+    baseStylePath: "../assets/base.css"
+  }
+  
+  render(<ProjectPage {...stat} />, `./docs/${stat.id}/index.html`, pageOptions)
 
   for (const subPage of stat.pages) {
-    console.log(subPage.path)
+    render(
+      <ProjectSubpage page={subPage} metadata={stat} />, 
+      `./docs/${stat.id}/${path.basename(subPage.path).replace(".md", ".html")}`, 
+      pageOptions
+    )
   }
 }

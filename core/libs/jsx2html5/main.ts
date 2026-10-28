@@ -31,13 +31,15 @@ export interface IRenderHtmlOption {
    */
   css?: string
   bodyClass?: string
+  baseStylePath?: string
 }
 
 export function render(component: JSX.Element, to: string, withOptions?: IRenderHtmlOption) {
   withOptions = {
     description: "Tracking which weird project duck is currently doing",
     title: "Duck's project index",
-    ...withOptions
+    baseStylePath: "./assets/base.css",
+    ...withOptions,
   }
 
   const NO_FLASHBANG_WORKAROUND = `
@@ -54,7 +56,7 @@ export function render(component: JSX.Element, to: string, withOptions?: IRender
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width">
         <title>${withOptions.title}</title>
-        <link rel="stylesheet" href="./assets/base.css">
+        <link rel="stylesheet" href="${withOptions.baseStylePath}">
         <meta name="description" content="${withOptions.description}">
         <meta name="duck" content="this is duck">
         ${NO_FLASHBANG_WORKAROUND}
