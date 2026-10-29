@@ -24,6 +24,7 @@ export class ShellExec<T extends any> {
 
   public async executeDangerously(): Promise<T> {
     const command = this.command.join(' ')
+    console.log("running command:", command)
     if (command.includes('rm -rf /')) {
       throw panic("fatal: your command contains 'rm -rf /'!!!")
     }
@@ -40,7 +41,11 @@ export class ShellExec<T extends any> {
       process.stdout?.on('close', () => resolve(stdoutData.join('')))
 
       process.stderr?.on('data', (data) => stderrData.push(`${data}`))
-      process.stderr?.on('close', () => reject(stderrData.join('')))
+      process.stderr?.on('close', () => {
+        const output = stderrData.join('')
+        if (output === '') return
+        reject(output)
+      })
     })
 
     if (this.defaultValue !== undefined) {

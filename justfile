@@ -9,6 +9,9 @@ update_assets:
 build:
   bun src/main.tsx
 
+why: update_assets
+  echo hi
+  
 update: update_assets
   git add .
   git commit -m "{{CURRENT_TIME}} - update project status"
