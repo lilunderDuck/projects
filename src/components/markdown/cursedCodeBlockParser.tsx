@@ -15,7 +15,11 @@ export const codeBlock__highlight = css`
   }
 
   & > .string {
-    color: var(--maroon)
+    color: var(--maroon);
+  }
+
+  & > .number {
+    color: var(--green);
   }
 `
 
@@ -88,7 +92,7 @@ export function cursedCodeBlockParserWithLineNumbers(codeLines: React.ReactNode 
     }
 
     if (typeof someCodePart === "string") {
-      someCodePart = <span className="token plain-text">{someCodePart}</span>
+      someCodePart = <span className="token unknown">{someCodePart}</span>
     }
 
     if (shouldAppendCssClass) {
@@ -98,7 +102,7 @@ export function cursedCodeBlockParserWithLineNumbers(codeLines: React.ReactNode 
       // make sure unfreezing doesn't do weird shit.
       assertMakeSureFirstNodeIsInjectedByMyCSS(someCodePart)
     }
-
+    
     everything.push(someCodePart)
   }
 

@@ -50,7 +50,8 @@ export function recursivelyRenderJSXFast(element: JSX.Element | JSX.Element[]): 
   throw panic(`unknown element type ${element}`)
 }
 
-export function isExactlyAReactElement(element: JSX.Element): element is AnyReactElement {
+export function isExactlyAReactElement(element: React.ReactNode): element is AnyReactElement {
+  if (!element) return false
   if (typeof element !== "object") return false
 
   return 'type' in element && 
