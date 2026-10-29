@@ -3,13 +3,11 @@ import Prism from "prismjs"
 import loadAllLang from "prismjs/components/index"
 import { css } from "../libs"
 import 'prismjs/plugins/line-numbers/prism-line-numbers'
-import { dplLogger, isExactlyAReactElement, type AnyReactElement } from "../utils"
-import { panic } from "../../utils/error"
+import { dplLogger, type AnyReactElement } from "../utils"
+import { panic } from "../../utils"
 
 const codeBlock__root = css`
   background-color: var(--mantle);
-  padding-inline: 10px;
-  padding-block: 5px;
   border-radius: 6px;
   white-space: break-spaces;
   margin-bottom: 10px;
@@ -17,8 +15,37 @@ const codeBlock__root = css`
 `
 
 const codeBlock__codeLine = css`
-  counter-increment: codeBlock;
-  content: counter(codeBlock);
+  &::before {
+    counter-increment: codeBlock;
+    content: counter(codeBlock);
+    display: inline-block;
+    width: 3.5rem;
+    padding-inline: 15px;
+    margin-right: 10px;
+    text-align: right;
+    background-color: var(--base);
+    color: var(--overlay1);
+  }
+
+  &:first-child::before {
+    padding-top: 10px;
+  }
+  
+  &:nth-last-child(1)::before {
+    padding-top: 10px;
+  }
+`
+
+const codeBlock__firstLineExtraPadding = css`
+  &::before {
+    padding-top: 10px;
+  }
+`
+
+const codeBlock__lastLineExtraPadding = css`
+  &::before {
+    padding-top: 10px;
+  }
 `
 
 dplLogger.info("Loading all prism predefined langs for code highlighting...")
@@ -85,68 +112,62 @@ function painfullySplitingNewlines(codeLines: React.ReactNode | React.ReactNode[
   }
 
   const splittedNewLines = codeLines.flatMap(that => {
-    if (typeof that === "string" && that.includes("\n")) {
-      return that.split(SPLIT_NEWLINES_AND_KEEP_THAT)
+    if (typeof that === "string") {
+      // Fix: the below code will attempt to split "\n" -> ["", "\n", ""]
+      // which we don't want it to do that
+      if (that === "\n") return that
+
+      if (that.includes("\n")) return that.split(SPLIT_NEWLINES_AND_KEEP_THAT)
     }
 
     return that
   }).flat()
 
-  const lineList: React.ReactNode[][] = []
   let currentLine: React.ReactNode[] = []
-  for (const someCodePart of splittedNewLines) {
-    if (someCodePart === "\n") {
-      currentLine.push('\n')
-      lineList.push(currentLine)
-      currentLine = []
+  let shouldAppendCssClass = true // set to true because we want to count the first line as well
+  for (let someCodePart of splittedNewLines) {
+    if (someCodePart === "") {
       continue
     }
 
+    if (someCodePart === "\n") {
+      assertMakeSureFirstNodeIsInjectedByMyCSS(currentLine)
+      shouldAppendCssClass = true
+      // push new line to make sure it doesn't do weird stuff with the UI
+      currentLine.push("\n")
+      continue // exit early to give the next element my CSS class
+    }
+
     if (typeof someCodePart === "string") {
-      currentLine.push(<span className="token plain-text">{someCodePart}</span>)
-      continue
+      someCodePart = <span className="token plain-text">{someCodePart}</span>
+    }
+
+    if (shouldAppendCssClass) {
+      shouldAppendCssClass = false
+      // gonna borrow "UNFREEZE_DATA" phase in forge for this variable name. 
+      let unfreezedData = reactNodeUnfreezeReadonly(someCodePart as AnyReactElement)
+      const classNames = (unfreezedData.props?.className ?? "").split(' ')
+      classNames.push(codeBlock__codeLine)
+      // @ts-ignore - satifies my own isExactlyAReactElement() check
+      unfreezedData['ref'] = "the_duck"
+      unfreezedData.props.className = classNames.join(' ')
+
+      someCodePart = unfreezedData
     }
 
     currentLine.push(someCodePart)
   }
 
-  for (let i = 0; i < lineList.length; i++) {
-    const thisReactNode = lineList[i]
-    if (!thisReactNode || typeof thisReactNode !== "object") continue
-    // @ts-ignore
-    if (isExactlyAReactElement(thisReactNode)) {
-      // please work, or else I'm gonna patch the react library inside node_modules itself.
-      // oh hey look at that, [minecraft mod] mixins at plain sight!
-      let firstNode = reactNodeUnfreezeReadonly(thisReactNode)
-      // if (firstNode.props?.className) {
-      //   firstNode.props['className'] = ''
-      // }
-      const classNames = (firstNode.props?.className ?? "").split(' ')
-      classNames.push(codeBlock__codeLine)
-      // @ts-ignore - satifies my own isExactlyAReactElement() check
-      firstNode['ref'] = null
-      firstNode.props.className = classNames.join(' ')
-      lineList[i]![0] = firstNode
-    }
-  }
-
-  assertMakeSureFirstLineIsInjectedByMyCSS(lineList)
-
-  return lineList.flat()
+  return currentLine
 }
 
-function assertMakeSureFirstLineIsInjectedByMyCSS(output: React.ReactNode[][]) {
-  for (let i = 0; i < output.length; i++) {
-    const line = output[i]
-    if (!line) throw panic("Array index out of bound")
-    if (typeof line[0] === "string") continue
-    const isHasAny = 
-      (line[0] as AnyReactElement).props.className?.includes(codeBlock__codeLine) ||
-      (line[0] as AnyReactElement).props.class?.includes(codeBlock__codeLine)
-    if (!isHasAny) {
-      console.log("Test failed, node detected is:", line[0], "css class it needs to have is:", codeBlock__codeLine)
-      throw panic("Missing CSS class at line index: " + i)
-    }
+function assertMakeSureFirstNodeIsInjectedByMyCSS(output: React.ReactNode[]) {
+  const isHasAny = 
+    (output[0] as AnyReactElement).props.className?.includes(codeBlock__codeLine) ||
+    (output[0] as AnyReactElement).props.class?.includes(codeBlock__codeLine)
+  if (!isHasAny) {
+    console.log("Test failed, node detected is:", output[0], "css class it needs to have is:", codeBlock__codeLine)
+    throw panic("Missing CSS class at the first element")
   }
 }
 
