@@ -2,6 +2,7 @@ import { For, scrollbar, scrollbar__invs, scrollbar__vertical } from "../compone
 import { HomeHeader, ProjectItem } from "../components"
 import { css } from "../core"
 import type { IProjectStat } from "../data"
+import { GLOBAL_PROJECT_PAGE_INLINE_PADDING } from "../main"
 
 const page__root = css`
   user-select: none;
@@ -10,7 +11,6 @@ const page__root = css`
 
 const page__mainContent = css`
   width: 100%;
-  padding-inline: 2rem;
   padding-top: 5px;
   padding-bottom: 15rem;
 `
@@ -23,7 +23,7 @@ export default function HomePage(props: { buildDate: string, projectList: IProje
   return (
     <div id="root" class={`${page__root} ${scrollbar} ${scrollbar__vertical} ${scrollbar__invs}`}>
       <HomeHeader buildDate={props.buildDate} />
-      <main class={page__mainContent}>
+      <main class={`${page__mainContent} ${GLOBAL_PROJECT_PAGE_INLINE_PADDING}`}>
         <ul class={page__projectList}>
           <For each={props.projectList}>
             {(it, index) => <ProjectItem {...it} index={index + 1} />}
