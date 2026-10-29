@@ -3,7 +3,7 @@ import { dplLogger, formatPath, getEverythingFrom, isFileOrDirExist, readFile, S
 import { LICENSE_REGISTRY, type IProjectMetadata, type IProjectStat } from "./data"
 
 export async function scanForProjectCandidate(basePath: string) {
-  dplLogger.info("duck's project loader is scanning for duck project canidate at", formatPath(basePath)) // not a (neo)forge reference :)
+  dplLogger.info("duck's project loader is scanning for duck project candidate at", formatPath(basePath)) // not a (neo)forge reference :)
 
   const allProjectsName = fs.readdirSync(basePath)
   const canidate = [] as IProjectStat[]
@@ -15,6 +15,8 @@ export async function scanForProjectCandidate(basePath: string) {
       dplLogger.info(".duck metadata folder does not exist for", formatPath(PROJECT_BASE_PATH), ". Skipping...")
       continue
     }
+
+    dplLogger.info("Found project candidate:", formatPath(PROJECT_BASE_PATH))
 
     let assetsPath: string | null = null
     if (isFileOrDirExist(`${DOT_DUCK_FOLDER}/assets`)) {
