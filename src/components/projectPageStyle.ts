@@ -1,4 +1,4 @@
-import { css } from "../../core";
+import { css } from "../core";
 
 export const page__rootStyle = css`
   user-select: none;

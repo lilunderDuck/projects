@@ -1,4 +1,4 @@
-import { css, MarkdownText, scrollbar, scrollbar__invs, scrollbar__vertical } from "../../core"
+import { css, MarkdownText, scrollbar, scrollbar__invs, scrollbar__vertical } from "../core"
 import { page__rootStyle, ProjectHeader, ProjectSection } from "../components"
 import type { IProjectStat } from "../data"
 

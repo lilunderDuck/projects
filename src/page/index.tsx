@@ -1,4 +1,4 @@
-import { css, For, scrollbar, scrollbar__invs, scrollbar__vertical } from "../../core"
+import { css, For, scrollbar, scrollbar__invs, scrollbar__vertical } from "../core"
 import { HomeHeader, ProjectItem } from "../components"
 import type { IProjectStat } from "../data"
 

@@ -1,4 +1,4 @@
-import { BsCaretLeftFill, css, MarkdownText, Show } from "../../core"
+import { BsCaretLeftFill, css, MarkdownText, Show } from "../core"
 import type { IProjectStat } from "../data"
 import { ImageOneItemView } from "./ImageItemsView"
 

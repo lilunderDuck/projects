@@ -1,4 +1,4 @@
-import { css, For, Tag } from "../../core"
+import { css, For, Tag } from "../core"
 import { PROJECT_STATUS_REGISTRY, PROJECT_TYPE_COLOR_MAPPING, type IProjectStat } from "../data"
 
 const table__table = css`

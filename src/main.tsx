@@ -1,6 +1,6 @@
 import path from "node:path"
 // ...
-import { css, render, type IRenderHtmlOption } from "../core"
+import { css, render, type IRenderHtmlOption } from "./core"
 import { CURRENT_BUILD_DATE } from "./data"
 import { scanForProjectCandidate } from "./generated"
 // ...

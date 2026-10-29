@@ -1,4 +1,4 @@
-import { css } from "../../core"
+import { css } from "../core"
 
 const view__oneItemView = css`
   width: 100%;

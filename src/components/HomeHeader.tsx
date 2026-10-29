@@ -1,4 +1,4 @@
-import { css } from "../../core"
+import { css } from "../core"
 
 const page__header = css`
   width: 100%;
