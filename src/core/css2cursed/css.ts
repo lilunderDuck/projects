@@ -1,6 +1,6 @@
 import { compile, serialize, stringify, type Element as CSSElement } from "stylis"
-import { createSingleWordSlidingRandomizer } from "../random"
 import { panic } from "../../utils"
+import { createSingleWordSlidingRandomizer } from "./dumb_random"
 
 const cachedCssValues = new Map<string, string>()
 export function dumpCSS() {

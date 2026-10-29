@@ -1,9 +1,9 @@
 import fs from "node:fs"
 import type { JSX } from "react"
-import { dumpCSS } from "./css_stuff"
 import path from "node:path"
-import constants from "node:constants"
+// ...
 import { recursivelyRenderJSXFast } from "./renderReactElement"
+import { dumpCSS } from "../css2cursed"
 
 declare global {
   // only be used for its jsx types
@@ -22,7 +22,7 @@ declare global {
 
 export interface IRenderHtmlOption {
   title: string
-  description: string
+  description?: string
   /**Additional CSS (e.g global styles) to the page, default will be
    * the generated CSS output by `dumpCSS()` function.
    * @default "... css output ..."

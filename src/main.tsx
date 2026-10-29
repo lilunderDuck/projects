@@ -13,8 +13,6 @@ import { initPrism } from "./prismInit"
 
 initPrism()
 
-const projectCanidate = await scanForProjectCandidate("D:/projects")
-
 const GLOBAL_STYLE = `
   @keyframes dot_grid_move {
     from {
@@ -26,18 +24,20 @@ const GLOBAL_STYLE = `
   }
 `
 
-const TITLE = "Duck's project index"
+const GLOBAL_PAGE_OPTIONS = { 
+  title: "Duck's project index", 
+  css: GLOBAL_STYLE
+}
 
+const projectCanidate = await scanForProjectCandidate("D:/projects")
+
+dplLogger.info("begin rendering all pages...")
 render((
   <HomePage 
     buildDate={CURRENT_BUILD_DATE} 
     projectList={projectCanidate} 
   />
-), "./docs/index.html", {
-  title: "Duck's project index",
-  description: "",
-  css: GLOBAL_STYLE
-})
+), "./docs/index.html", GLOBAL_PAGE_OPTIONS)
 
 for (const stat of projectCanidate) {
   const outputFolder = `./docs/${stat.id}`
@@ -47,13 +47,7 @@ for (const stat of projectCanidate) {
     copyDir(stat.assetsPath, `${outputFolder}/assets`)
   }
 
-  const pageOptions = {
-    title: TITLE,
-    description: "",
-    css: GLOBAL_STYLE,
-    baseStylePath: "../assets/base.css"
-  }
-  
+  const pageOptions = { ...GLOBAL_PAGE_OPTIONS, baseStylePath: "../assets/base.css" }
   render(<ProjectPage {...stat} />, `./docs/${stat.id}/index.html`, pageOptions)
 
   for (const subPage of stat.pages) {
