@@ -1,6 +1,6 @@
-import { BsCaretLeftFill, css, MarkdownText, Show } from "../core"
+import { BsCaretLeftFill, MarkdownText, Show } from "../components"
+import { css } from "../core"
 import type { IProjectStat } from "../data"
-import { ImageOneItemView } from "./ImageItemsView"
 
 const header__root = css`
   width: 100%;

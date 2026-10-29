@@ -1,4 +1,4 @@
-import { css } from "../libs"
+import { css } from "../../core"
 
 export const scrollbar = css`
   --sb-track-color: var(--base);

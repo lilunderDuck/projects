@@ -1,4 +1,4 @@
-import { css } from "../libs"
+import { css } from "../../core"
 
 const kbd = css`
   border-style: solid;

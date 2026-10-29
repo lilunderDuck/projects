@@ -1,8 +1,6 @@
 import fs from "node:fs"
-import { getEverythingFrom, isFileOrDirExist, readFile, ShellExec } from "../utils"
-import type { IProjectMetadata, IProjectStat } from "../data"
-import { LICENSE_REGISTRY } from "../data/licenseRegistry"
-import { dplLogger, formatPath } from "../core"
+import { dplLogger, formatPath, getEverythingFrom, isFileOrDirExist, readFile, ShellExec } from "./utils"
+import { LICENSE_REGISTRY, type IProjectMetadata, type IProjectStat } from "./data"
 
 export async function scanForProjectCandidate(basePath: string) {
   dplLogger.info("duck's project loader is scanning for duck project canidate at", formatPath(basePath)) // not a (neo)forge reference :)

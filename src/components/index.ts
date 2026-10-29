@@ -5,3 +5,6 @@ export * from "./ProjectSection"
 export * from "./ProjectStatTable"
 export * from "./ProjectHeader"
 export * from "./projectPageStyle"
+// ...
+export * from "./ui"
+export * from "./icons"

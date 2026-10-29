@@ -1,9 +1,9 @@
 import fs from "node:fs"
 import type { JSX } from "react"
 import { dumpCSS } from "./css_stuff"
-import { recursivelyRenderJSXFast } from "../../utils"
 import path from "node:path"
 import constants from "node:constants"
+import { recursivelyRenderJSXFast } from "./renderReactElement"
 
 declare global {
   // only be used for its jsx types

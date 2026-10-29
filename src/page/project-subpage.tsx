@@ -1,5 +1,6 @@
-import { css, MarkdownText, scrollbar, scrollbar__invs, scrollbar__vertical } from "../core"
+import { MarkdownText, scrollbar, scrollbar__invs, scrollbar__vertical } from "../components"
 import { page__rootStyle, ProjectHeader, ProjectSection } from "../components"
+import { css } from "../core"
 import type { IProjectStat } from "../data"
 
 const page__main = css`

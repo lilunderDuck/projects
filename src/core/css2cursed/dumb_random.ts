@@ -19,6 +19,8 @@
  */
 // ...
 
+import { panic } from "../../utils"
+
 export const splitAndClean = (something: string) => something
   .toLowerCase()
   .replaceAll("\n", "")

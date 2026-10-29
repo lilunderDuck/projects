@@ -1,5 +1,6 @@
-import { css, For, scrollbar, scrollbar__invs, scrollbar__vertical } from "../core"
+import { For, scrollbar, scrollbar__invs, scrollbar__vertical } from "../components"
 import { HomeHeader, ProjectItem } from "../components"
+import { css } from "../core"
 import type { IProjectStat } from "../data"
 
 const page__root = css`

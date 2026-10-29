@@ -1,4 +1,5 @@
-import { css, Show } from "../core"
+import { Show } from "../components"
+import { css } from "../core"
 
 const section__root = css`
   margin-bottom: 20px;

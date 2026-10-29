@@ -1,4 +1,5 @@
-import { MarkdownText, Tag, css } from "../core"
+import { MarkdownText, Tag } from "../components"
+import { css } from "../core"
 import { PROJECT_STATUS_REGISTRY, PROJECT_TYPE_COLOR_MAPPING, type IProjectStat } from "../data"
 
 const item__root = css`

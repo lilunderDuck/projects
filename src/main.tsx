@@ -1,13 +1,17 @@
 import path from "node:path"
 // ...
-import { dplLogger, render } from "./core"
+import { render } from "./core"
 import { CURRENT_BUILD_DATE } from "./data"
-import { scanForProjectCandidate } from "./generated"
 // ...
 import HomePage from "./page"
 import ProjectPage from "./page/project"
 import ProjectSubpage from "./page/project-subpage"
-import { copyDir, ensureDirExist } from "./utils"
+// ...
+import { copyDir, dplLogger, ensureDirExist } from "./utils"
+import { scanForProjectCandidate } from "./projectDiscovery"
+import { initPrism } from "./prismInit"
+
+initPrism()
 
 const projectCanidate = await scanForProjectCandidate("D:/projects")
 
