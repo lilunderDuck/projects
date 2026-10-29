@@ -7,7 +7,7 @@ export type HTMLAttribute<T extends keyof HTMLElementTagNameMap> = Partial<HTMLE
 
 export function elm<T extends keyof HTMLElementTagNameMap>(
   tag: T, 
-  tagAttributes: HTMLAttribute<T> | undefined, 
+  tagAttributes: HTMLAttribute<T> | undefined | null, 
   child: ChildNodeCompatible = []
 ) {
   let stringifiedAttribute = ""
@@ -20,6 +20,10 @@ export function elm<T extends keyof HTMLElementTagNameMap>(
   
   for (let attributeName in tagAttributes) {
     let attributeValue = tagAttributes[attributeName]
+    if (!attributeValue) {
+      continue // skip attributes with null or undefined as the value
+    }
+
     if (attributeName == "children") {
       continue // skip
     }
@@ -39,8 +43,8 @@ export function elm<T extends keyof HTMLElementTagNameMap>(
   }
 
   // Fix w3c error: Stray end tag img.
-  if (["img"].includes(tag)) {
-    return `<${tag}${tagAttributes ? ` ${stringifiedAttribute.trim()}` : ""}>`
+  if (["img", "br"].includes(tag)) {
+    return `<${tag}${tagAttributes ? ` ${stringifiedAttribute.trim()}` : ""}>` as const
   }
 
   return `<${tag}${tagAttributes ? ` ${stringifiedAttribute.trim()}` : ""}>${childern}</${tag}>` as const

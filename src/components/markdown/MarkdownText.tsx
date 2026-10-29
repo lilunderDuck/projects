@@ -1,8 +1,8 @@
 import html2react from "html-react-parser"
-import Prism from "prismjs"
 // ...
 import { css } from "../../core"
-import { codeBlock__highlight, cursedCodeBlockParserWithLineNumbers } from "./cursedCodeBlockParser"
+import { codeBlock__highlight, cursedCodeBlockParserWithLineNumbers, cursedRecursiveCodeBlockRenderer } from "./cursedCodeBlockParser"
+import { highlighter } from "../../codeBlockBootstrap"
 
 const codeBlock__root = css`
   background-color: var(--mantle);
@@ -33,15 +33,22 @@ export function MarkdownText(props: { children: string }) {
       )
 
       const stringifiedChildren = props.children.join('')
-      const HTML_CODE = Prism.highlight(
-        stringifiedChildren, 
-        // @ts-ignore
-        Prism.languages[props.language!], 
-        props.language!
+      const HTML_CODE = highlighter.codeToHast(
+        stringifiedChildren,
+        { lang: props.language!, theme: "catppuccin-latte" }
       )
 
-      const codeLines = cursedCodeBlockParserWithLineNumbers(html2react(HTML_CODE))
+      const b = highlighter.codeToHtml(
+        stringifiedChildren,
+        { lang: props.language!, theme: "catppuccin-latte" }
+      )
+      const a = cursedRecursiveCodeBlockRenderer(HTML_CODE)
+      console.log(a)
+      console.log("===============================================")
+      console.log(b)
 
+      const codeLines = cursedCodeBlockParserWithLineNumbers()
+      
       return (
         <pre class={`${codeBlock__root} ${codeBlock__highlight}`}>
           {codeLines}

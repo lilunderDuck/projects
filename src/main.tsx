@@ -9,9 +9,7 @@ import ProjectSubpage from "./page/project-subpage"
 // ...
 import { copyDir, dplLogger, ensureDirExist } from "./utils"
 import { scanForProjectCandidate } from "./projectDiscovery"
-import { initPrism } from "./prismInit"
-
-initPrism()
+import "./codeBlockBootstrap"
 
 const GLOBAL_STYLE = `
   @keyframes dot_grid_move {

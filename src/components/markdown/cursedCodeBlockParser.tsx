@@ -1,5 +1,6 @@
-import { css, type AnyReactElement } from "../../core"
+import { css, elm, type AnyReactElement } from "../../core"
 import { panic } from "../../utils"
+import hast from "hast"
 
 export const codeBlock__highlight = css`
   & > .comment {
@@ -58,6 +59,55 @@ const codeBlock__lastLineExtraPadding = css`
 `
 
 const SPLIT_NEWLINES_AND_KEEP_THAT = /(\n)/
+
+type AnyHastType = 
+  hast.Root |
+  hast.Element |
+  hast.Comment |
+  hast.Doctype |
+  hast.Text |
+  AnyHastType[]
+// ...
+
+export function cursedRecursiveCodeBlockRenderer(thisThing: AnyHastType): string {
+  if (Array.isArray(thisThing)) {
+    for (const node of thisThing) {
+      return cursedRecursiveCodeBlockRenderer(node)
+    }
+
+    throw panic(`how did you get here?`)
+  }
+
+  if (thisThing.type === "root") {
+    return cursedRecursiveCodeBlockRenderer(thisThing.children)
+  }
+
+  if (thisThing.type === "element") {
+    switch (thisThing.tagName) {
+      case "pre":
+      case "code":
+        // skip, don't do anything, because the below function will absolutely mess
+        // with react nodes to add line numbers
+        return thisThing.children.map(it => cursedRecursiveCodeBlockRenderer(it)).join('')
+
+      case "span": {
+        return elm(
+          thisThing.tagName, 
+          thisThing.properties, 
+          thisThing.children.map(it => cursedRecursiveCodeBlockRenderer(it))
+        )
+      }
+    
+      default: throw panic(`case ${thisThing.type} for <${thisThing.tagName} /> is not being handled`)
+    }
+  }
+
+  if (thisThing.type === "text") {
+    return thisThing.value
+  }
+  
+  throw panic(`case ${thisThing.type} is not being handled`)
+}
 
 // We want to add lines counter, but everything is statically rendered on build time,
 // any prism plugins that touching the DOM api is not gonna work,
