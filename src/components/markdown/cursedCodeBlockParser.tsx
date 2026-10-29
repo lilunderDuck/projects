@@ -8,7 +8,7 @@ const codeBlock__codeLine = css`
     display: inline-block;
     width: 3.5rem;
     padding-inline: 15px;
-    margin-right: 10px;
+    margin-right: 15px;
     text-align: right;
     background-color: var(--base);
     color: var(--overlay1);
@@ -31,7 +31,7 @@ const codeBlock__firstLineExtraPadding = css`
 
 const codeBlock__lastLineExtraPadding = css`
   &::before {
-    padding-top: 10px;
+    padding-bottom: 10px;
   }
 `
 
@@ -55,20 +55,19 @@ export function cursedCodeBlockParserWithLineNumbers(codeLines: React.ReactNode 
     }
 
     return that
-  }).flat()
+  }).flat().filter(it => it !== "")
 
-  let currentLine: React.ReactNode[] = []
+  const everything: React.ReactNode[] = []
   let shouldAppendCssClass = true // set to true because we want to count the first line as well
-  for (let someCodePart of splittedNewLines) {
-    if (someCodePart === "") {
-      continue
-    }
+  let lastLineIndex = 0
+  for (let i = 0; i < splittedNewLines.length; i++) {
+    let someCodePart = splittedNewLines[i]
 
     if (someCodePart === "\n") {
-      assertMakeSureFirstNodeIsInjectedByMyCSS(currentLine)
+      assertMakeSureFirstNodeIsInjectedByMyCSS(everything)
       shouldAppendCssClass = true
       // push new line to make sure it doesn't do weird stuff with the UI
-      currentLine.push("\n")
+      everything.push("\n")
       continue // exit early to give the next element my CSS class
     }
 
@@ -76,23 +75,33 @@ export function cursedCodeBlockParserWithLineNumbers(codeLines: React.ReactNode 
       someCodePart = <span className="token plain-text">{someCodePart}</span>
     }
 
+    // you like unfreezing the frozen react objects?
     if (shouldAppendCssClass) {
       shouldAppendCssClass = false
-      // gonna borrow "UNFREEZE_DATA" phase in forge for this variable name. 
-      let unfreezedData = reactNodeUnfreezeReadonly(someCodePart as AnyReactElement)
-      const classNames = (unfreezedData.props?.className ?? "").split(' ')
-      classNames.push(codeBlock__codeLine)
-      // @ts-ignore - satifies my own isExactlyAReactElement() check
-      unfreezedData['ref'] = "the_duck"
-      unfreezedData.props.className = classNames.join(' ')
-
-      someCodePart = unfreezedData
+      someCodePart = unreadonlyNodeAndAppendClassName(someCodePart as AnyReactElement, codeBlock__codeLine)
+      lastLineIndex = i
     }
 
-    currentLine.push(someCodePart)
+    everything.push(someCodePart)
   }
 
-  return currentLine
+  // can't figure out how to style the last line of code,
+  // gonna throw this thing inside here
+  everything[0] = unreadonlyNodeAndAppendClassName(everything[0] as AnyReactElement, codeBlock__firstLineExtraPadding)
+  everything[lastLineIndex] = unreadonlyNodeAndAppendClassName(everything[lastLineIndex] as AnyReactElement, codeBlock__lastLineExtraPadding)
+
+  return everything
+}
+
+function unreadonlyNodeAndAppendClassName(node: AnyReactElement, ...someClasses: string[]) {
+  let unfreezedData = reactNodeUnfreezeReadonly(node as AnyReactElement)
+  const classNames = (unfreezedData.props?.className ?? "").split(' ')
+  classNames.push(...someClasses)
+  // @ts-ignore - satifies my own isExactlyAReactElement() check
+  unfreezedData['ref'] = "the_duck"
+  unfreezedData.props.className = classNames.join(' ')
+
+  return unfreezedData
 }
 
 function assertMakeSureFirstNodeIsInjectedByMyCSS(output: React.ReactNode[]) {
