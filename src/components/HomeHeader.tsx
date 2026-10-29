@@ -20,6 +20,7 @@ const page__title = css`
 
 const page__description = css`
   text-align: center;
+  font-size: 1.06rem;
 `
 
 const page__updateNote = css`
