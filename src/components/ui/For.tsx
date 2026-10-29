@@ -3,7 +3,7 @@ import type { JSX, ReactNode } from "react"
 interface IForProps<T extends any> {
   each: T[] | null | undefined
   fallback?: ReactNode
-  children(it: T, index: number): JSX.Element
+  children(it: T, index: number): ReactNode
 }
 
 export function For<T extends any>(props: IForProps<T>): JSX.Element {

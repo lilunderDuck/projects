@@ -1,6 +1,8 @@
-import { css, elm, type AnyReactElement } from "../../core"
+import { css, elm, type AnyReactElement, type HTMLAttribute } from "../../core"
 import { panic } from "../../utils"
 import hast from "hast"
+import { For } from "../ui"
+import type { JSX } from "react/jsx-runtime"
 
 export const codeBlock__highlight = css`
   & > .comment {
@@ -69,13 +71,14 @@ type AnyHastType =
   AnyHastType[]
 // ...
 
-export function cursedRecursiveCodeBlockRenderer(thisThing: AnyHastType): string {
+export function cursedRecursiveCodeBlockRenderer(thisThing: AnyHastType): JSX.Element | string | (JSX.Element | string)[] {
   if (Array.isArray(thisThing)) {
+    const everything = []
     for (const node of thisThing) {
-      return cursedRecursiveCodeBlockRenderer(node)
+      everything.push(cursedRecursiveCodeBlockRenderer(node))
     }
 
-    throw panic(`how did you get here?`)
+    return everything.flat()
   }
 
   if (thisThing.type === "root") {
@@ -88,15 +91,20 @@ export function cursedRecursiveCodeBlockRenderer(thisThing: AnyHastType): string
       case "code":
         // skip, don't do anything, because the below function will absolutely mess
         // with react nodes to add line numbers
-        return thisThing.children.map(it => cursedRecursiveCodeBlockRenderer(it)).join('')
+        return thisThing.children.map(it => cursedRecursiveCodeBlockRenderer(it))
 
-      case "span": {
-        return elm(
-          thisThing.tagName, 
-          thisThing.properties, 
-          thisThing.children.map(it => cursedRecursiveCodeBlockRenderer(it))
+      case "span":
+        if (thisThing.properties.class === "line") {
+          return thisThing.children.map(it => cursedRecursiveCodeBlockRenderer(it))
+        }
+
+        return (
+          <span {...thisThing.properties as React.JSX.IntrinsicElements["span"]}>
+            <For each={thisThing.children}>
+              {it => cursedRecursiveCodeBlockRenderer(it)}
+            </For>
+          </span>
         )
-      }
     
       default: throw panic(`case ${thisThing.type} for <${thisThing.tagName} /> is not being handled`)
     }
@@ -114,7 +122,7 @@ export function cursedRecursiveCodeBlockRenderer(thisThing: AnyHastType): string
 // this might be the worst hack I've wrote.
 export function cursedCodeBlockParserWithLineNumbers(codeLines: React.ReactNode | React.ReactNode[]) {
   if (!Array.isArray(codeLines)) {
-    throw panic(`expected an array or React.ReactNode, received ${typeof codeLines}, is there a mistake?`)
+    throw panic(`expected an array or React.ReactNode, received`, codeLines, `, is there a mistake?`)
   }
 
   const splittedNewLines = codeLines.flatMap(that => {

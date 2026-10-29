@@ -46,15 +46,13 @@ export function recursivelyRenderJSXFast(element: JSX.Element | JSX.Element[]): 
     const isEmptyProps = Object.keys(element.props).length === 0
     return elm(element.type, isEmptyProps ? undefined : element.props, recursivelyRenderJSXFast(element.props.children))
   }
-
-  throw panic(`unknown element type ${element}`)
+  const a = isExactlyAReactElement(element)
+  throw panic(`unknown element type`, element)
 }
 
 export function isExactlyAReactElement(element: React.ReactNode): element is AnyReactElement {
-  if (!element) return false
   if (typeof element !== "object") return false
+  if (!element) return false
 
-  return 'type' in element && 
-    'key' in element && 
-    'ref' in element
+  return 'type' in element && 'key' in element && 'ref' in element
 }
