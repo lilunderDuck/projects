@@ -19,7 +19,7 @@
  */
 // ...
 
-const splitAndClean = (something: string) => something
+export const splitAndClean = (something: string) => something
   .toLowerCase()
   .replaceAll("\n", "")
   // ultra specific case, do not touch
@@ -118,7 +118,7 @@ export function createWordSlidingRandomizer(source: string[] = splitAndClean(SRC
     let randomPrefix: string[] = []
 
     for (let i = 0; i < length; i++) {
-      randomPrefix.push(source[nextIndex + i])
+      randomPrefix.push(source[nextIndex + i]!)
     }
 
     const rolled = randomPrefix.join("_")
@@ -131,6 +131,8 @@ export function createWordSlidingRandomizer(source: string[] = splitAndClean(SRC
     return rolled
   }
 }
+
+export const SRC_ALL = splitAndClean(`${SRC_MISSILE_DEFAULT} ${SRC_NEOFORGE_DOCS_SET} ${SRC_CAT_SET}`.replaceAll(".", ""))
 
 /**A factory function that generate only (almost) a single word with the provided source set.
  * 
@@ -166,7 +168,7 @@ export function createWordSlidingRandomizer(source: string[] = splitAndClean(SRC
  * @see {@link splitAndClean()} - utility function to clean up the source set.
  */
 export function createSingleWordSlidingRandomizer(
-  source: string[] = splitAndClean(`${SRC_MISSILE_DEFAULT} ${SRC_NEOFORGE_DOCS_SET} ${SRC_CAT_SET}`.replaceAll(".", ""))
+  source: string[] = SRC_ALL
 ) {
   const generated = new Set<string>()
   const SOURCE_MAX_LENGTH = source.length
@@ -177,7 +179,7 @@ export function createSingleWordSlidingRandomizer(
   let wordLength = 1
   return function roll(length = wordLength) {
     length = wordLength
-    randomPrefix.push(source[currentWordIndex])
+    randomPrefix.push(source[currentWordIndex]!)
     
     const rolled = randomPrefix.join("_")
     if (generated.has(rolled) && currentWordIndex === SOURCE_MAX_LENGTH - 1 && currentRetry === MAX_RETRY) {
