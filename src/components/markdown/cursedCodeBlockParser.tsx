@@ -1,6 +1,24 @@
 import { css, type AnyReactElement } from "../../core"
 import { panic } from "../../utils"
 
+export const codeBlock__highlight = css`
+  & > .comment {
+    color: var(--overlay2);
+  }
+
+  & > .function {
+    color: var(--yellow);
+  }
+
+  & > .keyword {
+    color: var(--blue);
+  }
+
+  & > .string {
+    color: var(--maroon)
+  }
+`
+
 const codeBlock__codeLine = css`
   &::before {
     counter-increment: codeBlock;

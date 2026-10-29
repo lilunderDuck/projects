@@ -2,7 +2,7 @@ import html2react from "html-react-parser"
 import Prism from "prismjs"
 // ...
 import { css } from "../../core"
-import { cursedCodeBlockParserWithLineNumbers } from "./cursedCodeBlockParser"
+import { codeBlock__highlight, cursedCodeBlockParserWithLineNumbers } from "./cursedCodeBlockParser"
 
 const codeBlock__root = css`
   background-color: var(--mantle);
@@ -43,7 +43,7 @@ export function MarkdownText(props: { children: string }) {
       const codeLines = cursedCodeBlockParserWithLineNumbers(html2react(HTML_CODE))
 
       return (
-        <pre class={codeBlock__root}>
+        <pre class={`${codeBlock__root} ${codeBlock__highlight}`}>
           {codeLines}
         </pre>
       )
