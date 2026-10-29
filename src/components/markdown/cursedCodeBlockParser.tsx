@@ -8,7 +8,7 @@ const codeBlock__codeLine = css`
     display: inline-block;
     width: 3.5rem;
     padding-inline: 15px;
-    margin-right: 15px;
+    margin-right: 20px;
     text-align: right;
     background-color: var(--base);
     color: var(--overlay1);
@@ -50,8 +50,7 @@ export function cursedCodeBlockParserWithLineNumbers(codeLines: React.ReactNode 
       // Fix: the below code will attempt to split "\n" -> ["", "\n", ""]
       // which we don't want it to do that
       if (that === "\n") return that
-
-      if (that.includes("\n")) return that.split(SPLIT_NEWLINES_AND_KEEP_THAT)
+      if (that.includes("\n")) return that.split(SPLIT_NEWLINES_AND_KEEP_THAT) // <- "below code"
     }
 
     return that
@@ -64,7 +63,6 @@ export function cursedCodeBlockParserWithLineNumbers(codeLines: React.ReactNode 
     let someCodePart = splittedNewLines[i]
 
     if (someCodePart === "\n") {
-      assertMakeSureFirstNodeIsInjectedByMyCSS(everything)
       shouldAppendCssClass = true
       // push new line to make sure it doesn't do weird stuff with the UI
       everything.push("\n")
@@ -75,11 +73,12 @@ export function cursedCodeBlockParserWithLineNumbers(codeLines: React.ReactNode 
       someCodePart = <span className="token plain-text">{someCodePart}</span>
     }
 
-    // you like unfreezing the frozen react objects?
     if (shouldAppendCssClass) {
       shouldAppendCssClass = false
       someCodePart = unreadonlyNodeAndAppendClassName(someCodePart as AnyReactElement, codeBlock__codeLine)
       lastLineIndex = i
+      // make sure unfreezing doesn't do weird shit.
+      assertMakeSureFirstNodeIsInjectedByMyCSS(someCodePart)
     }
 
     everything.push(someCodePart)
@@ -104,12 +103,12 @@ function unreadonlyNodeAndAppendClassName(node: AnyReactElement, ...someClasses:
   return unfreezedData
 }
 
-function assertMakeSureFirstNodeIsInjectedByMyCSS(output: React.ReactNode[]) {
+function assertMakeSureFirstNodeIsInjectedByMyCSS(output: React.ReactNode) {
   const isHasAny = 
-    (output[0] as AnyReactElement).props.className?.includes(codeBlock__codeLine) ||
-    (output[0] as AnyReactElement).props.class?.includes(codeBlock__codeLine)
+    (output as AnyReactElement).props.className?.includes(codeBlock__codeLine) ||
+    (output as AnyReactElement).props.class?.includes(codeBlock__codeLine)
   if (!isHasAny) {
-    console.log("Test failed, node detected is:", output[0], "css class it needs to have is:", codeBlock__codeLine)
+    console.log("Test failed, node detected is:", output, ", css class it needs to have is:", codeBlock__codeLine)
     throw panic("Missing CSS class at the first element")
   }
 }
