@@ -1,6 +1,7 @@
 import { BsCaretLeftFill, MarkdownText, Show } from "../components"
 import { css } from "../core"
 import type { IProjectStat } from "../data"
+import { GLOBAL_PROJECT_PAGE_INLINE_PADDING } from "../main"
 
 const header__root = css`
   width: 100%;
@@ -37,7 +38,6 @@ const header__titleWrap = css`
   position: absolute;
   bottom: 0;
   left: 0;
-  padding-inline: 4rem;
   padding-bottom: 30px;
 `
 
@@ -91,7 +91,7 @@ export function ProjectHeader(props: IProjectStat) {
         <img class={`${header__bannerImage} ${header__headerImgBorder}`} src={`./assets/${props.banner}`} draggable={false} />
       </Show>
       <div class={header__headerShadow} />
-      <div class={header__titleWrap}>
+      <div class={`${header__titleWrap} ${GLOBAL_PROJECT_PAGE_INLINE_PADDING}`}>
         <span class={header__title}>{props.title}</span>
         <MarkdownText>
           {props.description}

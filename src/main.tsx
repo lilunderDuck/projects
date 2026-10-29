@@ -11,6 +11,9 @@ import { copyDir, dplLogger, ensureDirExist } from "./utils"
 import { scanForProjectCandidate } from "./projectDiscovery"
 import "./codeBlockBootstrap"
 
+const randomizer = createWordSlidingRandomizer()
+export const GLOBAL_PROJECT_PAGE_INLINE_PADDING = randomizer(8)
+
 const GLOBAL_STYLE = `
   @keyframes dot_grid_move {
     from {
@@ -25,6 +28,14 @@ const GLOBAL_STYLE = `
     pre {
       word-break: break-all;
     }
+  }
+
+  @media screen and (max-width: 650px) {
+    .${GLOBAL_PROJECT_PAGE_INLINE_PADDING} { padding-inline: 2rem; }
+  }
+
+  @media screen and (min-width: 650px) {
+    .${GLOBAL_PROJECT_PAGE_INLINE_PADDING} { padding-inline: 4rem; }
   }
 `
 
