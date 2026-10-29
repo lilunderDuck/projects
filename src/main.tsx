@@ -3,7 +3,7 @@ import path from "node:path"
 import { createWordSlidingRandomizer, render } from "./core"
 import { CURRENT_BUILD_DATE } from "./data"
 // ...
-import HomePage from "./page"
+import HomePage, { HOME_PAGE_CLASSES } from "./page"
 import ProjectPage from "./page/project"
 import ProjectSubpage from "./page/project-subpage"
 // ...
@@ -21,6 +21,16 @@ const GLOBAL_STYLE = `
     }
     to {
       background-position: 40px -40px;
+    }
+  }
+
+  @keyframes cube__spinningAnimation {
+    0% {
+      transform: rotateX(-20deg) rotateY(20deg);
+    }
+
+    100% {
+      transform: rotateX(-20deg) rotateY(740deg);
     }
   }
 
@@ -52,7 +62,7 @@ render((
     buildDate={CURRENT_BUILD_DATE} 
     projectList={projectCanidate} 
   />
-), "./docs/index.html", GLOBAL_PAGE_OPTIONS)
+), "./docs/index.html", { ...GLOBAL_PAGE_OPTIONS, bodyClass: HOME_PAGE_CLASSES })
 
 for (const stat of projectCanidate) {
   const outputFolder = `./docs/${stat.id}`

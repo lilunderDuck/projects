@@ -32,6 +32,7 @@ const item__indexNumber = css`
   font-size: 2rem;
   width: 30px;
   flex-shrink: 0;
+  text-align: center;
 `
 
 const item__icon = css`
