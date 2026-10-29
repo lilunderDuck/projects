@@ -1,5 +1,6 @@
 import { compile, serialize, stringify, type Element as CSSElement } from "stylis"
 import { createSingleWordSlidingRandomizer } from "../dumb_random"
+import { panic } from "../../../utils"
 
 const cachedCssValues = new Map<string, string>()
 export function dumpCSS() {
@@ -172,7 +173,7 @@ function recursivelyParseCSSFast(thisCssRule: CSSElement[], ref: IFastCSSParserR
 
       case "rule":
         if (!Array.isArray(cssRule.children)) {
-          throw new Error(`panic: wrong type passed in`)
+          throw panic(`panic: wrong type passed in`)
         }
 
         ref.nestedBlocks.push({
@@ -188,8 +189,7 @@ function recursivelyParseCSSFast(thisCssRule: CSSElement[], ref: IFastCSSParserR
         // ... skip ...
       continue
     
-      default:
-        throw new Error("panic: unknown CSS type: " + cssRule.type)
+      default: throw panic("unknown CSS type: " + cssRule.type)
     }
   }
 

@@ -1,5 +1,6 @@
 import { Fragment, type JSX, type ReactElement } from "react"
 import { elm, type HTMLAttribute } from "./element"
+import { panic } from "../../utils"
 
 // Used dummy HTMLAttribute<"div"> because I'm lazy
 export type AnyReactElement = ReactElement<
@@ -46,7 +47,7 @@ export function recursivelyRenderJSXFast(element: JSX.Element | JSX.Element[]): 
     return elm(element.type, isEmptyProps ? undefined : element.props, recursivelyRenderJSXFast(element.props.children))
   }
 
-  throw new Error(`panic: unknown element type ${element}`)
+  throw panic(`unknown element type ${element}`)
 }
 
 export function isExactlyAReactElement(element: JSX.Element): element is AnyReactElement {

@@ -2,9 +2,10 @@ import fs from "node:fs"
 import { getEverythingFrom, isFileOrDirExist, readFile, ShellExec } from "../utils"
 import type { IProjectMetadata, IProjectStat } from "../data"
 import { LICENSE_REGISTRY } from "../data/licenseRegistry"
+import { dplLogger, formatPath } from "../core"
 
 export async function scanForProjectCandidate(basePath: string) {
-  console.log("Scanning for duck's project canidate at", basePath) // not a (neo)forge reference :)
+  dplLogger.info("duck's project loader is scanning for duck project canidate at", formatPath(basePath)) // not a (neo)forge reference :)
 
   const allProjectsName = fs.readdirSync(basePath)
   const canidate = [] as IProjectStat[]
@@ -13,7 +14,7 @@ export async function scanForProjectCandidate(basePath: string) {
     const PROJECT_BASE_PATH = `${basePath}/${projectFolderName}`
     const DOT_DUCK_FOLDER = `${PROJECT_BASE_PATH}/.duck` as const
     if (!isFileOrDirExist(DOT_DUCK_FOLDER)) {
-      console.log(".duck metadata folder does not exist for", PROJECT_BASE_PATH, ". Skipping...")
+      dplLogger.info(".duck metadata folder does not exist for", formatPath(PROJECT_BASE_PATH), ". Skipping...")
       continue
     }
 
@@ -38,6 +39,8 @@ export async function scanForProjectCandidate(basePath: string) {
     canidate.push(stat)
   }
 
+  dplLogger.info("Found", canidate.length, "candidate", "\n\n")
+
   return canidate
 }
 
@@ -58,7 +61,7 @@ function parseOtherMarkdownPage(dotDuckFolderPath: string) {
 function readProjectMetadata(dotDuckFolderPath: string) {
   const PROJECT_METADATA_PATH = `${dotDuckFolderPath}/metadata.json` as const
   if (!isFileOrDirExist(PROJECT_METADATA_PATH)) {
-    console.log("missing project metadata.json on .duck folder at", PROJECT_METADATA_PATH, ". Skipping...")
+    dplLogger.warn("missing project metadata.json on .duck folder at", PROJECT_METADATA_PATH, ". Skipping...")
     return null
   }
 
@@ -70,7 +73,7 @@ function getProjectLongDescription(dotDuckFolderPath: string) {
   try {
     return readFile(PROJECT_LONG_DESCRIPTION_PATH).asText()
   } catch(error) {
-    console.log("Could not get the project long description from:", PROJECT_LONG_DESCRIPTION_PATH)
+    dplLogger.info("Could not get the project long description from:", PROJECT_LONG_DESCRIPTION_PATH)
     return ''
   }
 }

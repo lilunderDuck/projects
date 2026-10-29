@@ -3,7 +3,8 @@ import Prism from "prismjs"
 import loadAllLang from "prismjs/components/index"
 import { css } from "../libs"
 import 'prismjs/plugins/line-numbers/prism-line-numbers'
-import { isExactlyAReactElement, type AnyReactElement } from "../utils"
+import { dplLogger, isExactlyAReactElement, type AnyReactElement } from "../utils"
+import { panic } from "../../utils/error"
 
 const codeBlock__root = css`
   background-color: var(--mantle);
@@ -20,6 +21,7 @@ const codeBlock__codeLine = css`
   content: counter(codeBlock);
 `
 
+dplLogger.info("Loading all prism predefined langs for code highlighting...")
 loadAllLang()
 
 Prism.languages['gdscript'] = Prism.languages.extend('python', {
@@ -61,10 +63,7 @@ export function MarkdownText(props: { children: string }) {
         props.language!
       )
 
-      console.log("DPL - state transition REACT_CODE_BLOCK_QUICK_HACK running")
       const codeLines = painfullySplitingNewlines(html2react(HTML_CODE))
-
-      console.log(codeLines)
 
       return (
         <pre class={codeBlock__root}>
@@ -82,7 +81,7 @@ const SPLIT_NEWLINES_AND_KEEP_THAT = /(\n)/
 // this might be the worst hack I've wrote.
 function painfullySplitingNewlines(codeLines: React.ReactNode | React.ReactNode[]) {
   if (!Array.isArray(codeLines)) {
-    throw new Error(`expected an array or React.ReactNode, received ${typeof codeLines}, is there a mistake?`)
+    throw panic(`expected an array or React.ReactNode, received ${typeof codeLines}, is there a mistake?`)
   }
 
   const splittedNewLines = codeLines.flatMap(that => {
@@ -139,15 +138,14 @@ function painfullySplitingNewlines(codeLines: React.ReactNode | React.ReactNode[
 function assertMakeSureFirstLineIsInjectedByMyCSS(output: React.ReactNode[][]) {
   for (let i = 0; i < output.length; i++) {
     const line = output[i]
-    if (!line) throw new Error("Array index out of bound")
+    if (!line) throw panic("Array index out of bound")
     if (typeof line[0] === "string") continue
     const isHasAny = 
       (line[0] as AnyReactElement).props.className?.includes(codeBlock__codeLine) ||
       (line[0] as AnyReactElement).props.class?.includes(codeBlock__codeLine)
     if (!isHasAny) {
-      console.log("ERROR DURING PROJECT LOADING")
       console.log("Test failed, node detected is:", line[0], "css class it needs to have is:", codeBlock__codeLine)
-      throw new Error("Missing CSS class at line index: " + i)
+      throw panic("Missing CSS class at line index: " + i)
     }
   }
 }

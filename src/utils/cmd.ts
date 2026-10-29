@@ -1,4 +1,5 @@
 import child_process from "node:child_process"
+import { panic } from "./error"
 
 export class ShellExec<T extends any> {
   public constructor(protected command: (string | number)[]) {}
@@ -24,12 +25,12 @@ export class ShellExec<T extends any> {
   public async executeDangerously(): Promise<T> {
     const command = this.command.join(' ')
     if (command.includes('rm -rf /')) {
-      throw new Error("fatal: your command contains 'rm -rf /'!!!")
+      throw panic("fatal: your command contains 'rm -rf /'!!!")
     }
 
     const process = child_process.exec(command)
     if (!process.stdout || !process.stderr) {
-      throw new Error("fatal: child process died - shell process could not be successfully spawned.")
+      throw panic("fatal: child process died - shell process could not be successfully spawned.")
     }
 
     const commandPromise = new Promise<string>((resolve, reject) => {

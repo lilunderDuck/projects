@@ -183,7 +183,7 @@ export function createSingleWordSlidingRandomizer(
     
     const rolled = randomPrefix.join("_")
     if (generated.has(rolled) && currentWordIndex === SOURCE_MAX_LENGTH - 1 && currentRetry === MAX_RETRY) {
-      throw new Error("panic: starvation - cannot generate a new name, createSingleWordSlidingRandomizer() has ran out of words.")
+      throw panic("panic: starvation - cannot generate a new name, createSingleWordSlidingRandomizer() has ran out of words.")
     }
 
     if (generated.has(rolled)) { // if found duplicate

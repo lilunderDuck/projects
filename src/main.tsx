@@ -1,6 +1,6 @@
 import path from "node:path"
 // ...
-import { css, render, type IRenderHtmlOption } from "./core"
+import { dplLogger, render } from "./core"
 import { CURRENT_BUILD_DATE } from "./data"
 import { scanForProjectCandidate } from "./generated"
 // ...
@@ -10,7 +10,6 @@ import ProjectSubpage from "./page/project-subpage"
 import { copyDir, ensureDirExist } from "./utils"
 
 const projectCanidate = await scanForProjectCandidate("D:/projects")
-console.log("Found", projectCanidate.length, "canidate, time to generate some pages")
 
 const GLOBAL_STYLE = `
   @keyframes dot_grid_move {
@@ -61,3 +60,5 @@ for (const stat of projectCanidate) {
     )
   }
 }
+
+dplLogger.info("Done :)")
