@@ -1,11 +1,13 @@
+import html2react from "html-react-parser"
 import { css } from "../../core"
-import { codeBlock__highlight, cursedCodeBlockParserWithLineNumbers, cursedRecursiveCodeBlockRenderer } from "./cursedCodeBlockParser"
+import { cursedRecursiveCodeBlockRenderer } from "./cursedCodeBlockParser"
 import { highlighter } from "../../codeBlockBootstrap"
 
 const codeBlock__root = css`
   background-color: var(--mantle);
   border-radius: 6px;
   white-space: break-spaces;
+  overflow-wrap: break-word;
   margin-bottom: 10px;
   counter-reset: codeBlock;
 `
@@ -36,10 +38,11 @@ export function MarkdownText(props: { children: string }) {
         { lang: props.language!, theme: "catppuccin-frappe" }
       ))
 
-      const codeLines = cursedCodeBlockParserWithLineNumbers(HTML_CODE)
+      // const codeLines = cursedCodeBlockParserWithLineNumbers(html2react(HTML_CODE))
+      const codeLines = html2react(HTML_CODE)
       
       return (
-        <pre class={`${codeBlock__root} ${codeBlock__highlight}`}>
+        <pre class={codeBlock__root}>
           {codeLines}
         </pre>
       )

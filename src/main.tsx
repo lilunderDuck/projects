@@ -1,6 +1,6 @@
 import path from "node:path"
 // ...
-import { render } from "./core"
+import { createWordSlidingRandomizer, render } from "./core"
 import { CURRENT_BUILD_DATE } from "./data"
 // ...
 import HomePage from "./page"
@@ -18,6 +18,12 @@ const GLOBAL_STYLE = `
     }
     to {
       background-position: 40px -40px;
+    }
+  }
+
+  @media screen and (max-width: 920px) {
+    pre {
+      word-break: break-all;
     }
   }
 `

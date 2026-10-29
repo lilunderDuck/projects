@@ -1,66 +1,59 @@
-import { css, elm, type AnyReactElement, type HTMLAttribute } from "../../core"
+import { css, elm } from "../../core"
 import { panic } from "../../utils"
 import hast from "hast"
-import { For } from "../ui"
-import type { JSX } from "react/jsx-runtime"
 
-export const codeBlock__highlight = css`
-  & > .comment {
-    color: var(--overlay2);
+const TOKEN_COLOR_REMAPPING = {
+  /* keyword */ "#CA9EE6": css`color:#CA9EE6;`,
+  /* comment */ "#949CBB": css`color:#949CBB;`,
+  /* functions */ "#8CAAEE": css`color:#8CAAEE;`,
+  /* literal */ "#E78284": css`color:#E78284;`,
+  /* props access */ "#EA999C": css`color:#EA999C;`,
+  /* operators */ "#81C8BE": css`color:#81C8BE;`,
+  /* numbers */ "#EF9F76": css`color:#EF9F76;`,
+  /* strings */ "#A6D189": css`color:#A6D189;`,
+  /* class */ "#E5C890": css`color:#E5C890;`,
+  /* unknown */ "#C6D0F5": css`color:#C6D0F5;`,
+}
+
+function grabIfHas<T extends Record<string, any>>(thisThing: string | undefined, inObject: T) {
+  for (const key of Object.keys(inObject)) {
+    if ((thisThing ?? "").includes(key)) {
+      return inObject[key]
+    }
   }
 
-  & > .function {
-    color: var(--yellow);
-  }
-
-  & > .keyword {
-    color: var(--blue);
-  }
-
-  & > .string {
-    color: var(--maroon);
-  }
-
-  & > .number {
-    color: var(--green);
-  }
-`
+  throw panic("key not found, tried to search", thisThing, "inside", inObject)
+}
 
 const codeBlock__codeLine = css`
+  position: relative;
+  padding-left: 4.5rem;
+  display: inline-block;
   &::before {
     counter-increment: codeBlock;
     content: counter(codeBlock);
+    position: absolute;
+    left: 0;
+    top: 0;
     display: inline-block;
     width: 3.5rem;
+    height: 100%;
     padding-inline: 15px;
-    margin-right: 20px;
     text-align: right;
     background-color: var(--base);
     color: var(--overlay1);
   }
 
+  &:first-child,
   &:first-child::before {
     padding-top: 10px;
   }
-  
-  &:nth-last-child(1)::before {
-    padding-top: 10px;
-  }
-`
 
-const codeBlock__firstLineExtraPadding = css`
-  &::before {
-    padding-top: 10px;
-  }
-`
-
-const codeBlock__lastLineExtraPadding = css`
-  &::before {
+  &:last-child,
+  &:last-child::before {
     padding-bottom: 10px;
   }
 `
-
-const SPLIT_NEWLINES_AND_KEEP_THAT = /(\n)/
 
 type AnyHastType = 
   hast.Root |
@@ -71,14 +64,14 @@ type AnyHastType =
   AnyHastType[]
 // ...
 
-export function cursedRecursiveCodeBlockRenderer(thisThing: AnyHastType): JSX.Element | string | (JSX.Element | string)[] {
+export function cursedRecursiveCodeBlockRenderer(thisThing: AnyHastType): string {
   if (Array.isArray(thisThing)) {
-    const everything = []
+    const everything = [] as string[]
     for (const node of thisThing) {
       everything.push(cursedRecursiveCodeBlockRenderer(node))
     }
 
-    return everything.flat()
+    return everything.join('')
   }
 
   if (thisThing.type === "root") {
@@ -91,19 +84,26 @@ export function cursedRecursiveCodeBlockRenderer(thisThing: AnyHastType): JSX.El
       case "code":
         // skip, don't do anything, because the below function will absolutely mess
         // with react nodes to add line numbers
-        return thisThing.children.map(it => cursedRecursiveCodeBlockRenderer(it))
+        return thisThing.children.map(it => cursedRecursiveCodeBlockRenderer(it)).join('')
 
       case "span":
+        // prevent empty new line
+        if (thisThing.children.length === 0) return ''
+
         if (thisThing.properties.class === "line") {
-          return thisThing.children.map(it => cursedRecursiveCodeBlockRenderer(it))
+          return elm(
+            "span",
+            { class: codeBlock__codeLine },
+            thisThing.children.map(it => cursedRecursiveCodeBlockRenderer(it)).join('')
+          )
         }
 
-        return (
-          <span {...thisThing.properties as React.JSX.IntrinsicElements["span"]}>
-            <For each={thisThing.children}>
-              {it => cursedRecursiveCodeBlockRenderer(it)}
-            </For>
-          </span>
+        const className = grabIfHas(thisThing.properties.style, TOKEN_COLOR_REMAPPING)
+
+        return elm(
+          "span",
+          { class: className },
+          thisThing.children.map(it => cursedRecursiveCodeBlockRenderer(it)).join('')
         )
     
       default: throw panic(`case ${thisThing.type} for <${thisThing.tagName} /> is not being handled`)
@@ -115,109 +115,4 @@ export function cursedRecursiveCodeBlockRenderer(thisThing: AnyHastType): JSX.El
   }
   
   throw panic(`case ${thisThing.type} is not being handled`)
-}
-
-// We want to add lines counter, but everything is statically rendered on build time,
-// any prism plugins that touching the DOM api is not gonna work,
-// this might be the worst hack I've wrote.
-export function cursedCodeBlockParserWithLineNumbers(codeLines: React.ReactNode | React.ReactNode[]) {
-  if (!Array.isArray(codeLines)) {
-    throw panic(`expected an array or React.ReactNode, received`, codeLines, `, is there a mistake?`)
-  }
-
-  const splittedNewLines = codeLines.flatMap(that => {
-    if (typeof that === "string") {
-      // Fix: the below code will attempt to split "\n" -> ["", "\n", ""]
-      // which we don't want it to do that
-      if (that === "\n") return that
-      if (that.includes("\n")) return that.split(SPLIT_NEWLINES_AND_KEEP_THAT) // <- "below code"
-    }
-
-    return that
-  }).flat().filter(it => it !== "")
-
-  const everything: React.ReactNode[] = []
-  let shouldAppendCssClass = true // set to true because we want to count the first line as well
-  let lastLineIndex = 0
-  for (let i = 0; i < splittedNewLines.length; i++) {
-    let someCodePart = splittedNewLines[i]
-
-    if (someCodePart === "\n") {
-      shouldAppendCssClass = true
-      // push new line to make sure it doesn't do weird stuff with the UI
-      everything.push("\n")
-      continue // exit early to give the next element my CSS class
-    }
-
-    if (typeof someCodePart === "string") {
-      someCodePart = <span className="token unknown">{someCodePart}</span>
-    }
-
-    if (shouldAppendCssClass) {
-      shouldAppendCssClass = false
-      someCodePart = unreadonlyNodeAndAppendClassName(someCodePart as AnyReactElement, codeBlock__codeLine)
-      lastLineIndex = i
-      // make sure unfreezing doesn't do weird shit.
-      assertMakeSureFirstNodeIsInjectedByMyCSS(someCodePart)
-    }
-    
-    everything.push(someCodePart)
-  }
-
-  // can't figure out how to style the last line of code,
-  // gonna throw this thing inside here
-  everything[0] = unreadonlyNodeAndAppendClassName(everything[0] as AnyReactElement, codeBlock__firstLineExtraPadding)
-  everything[lastLineIndex] = unreadonlyNodeAndAppendClassName(everything[lastLineIndex] as AnyReactElement, codeBlock__lastLineExtraPadding)
-
-  return everything
-}
-
-function unreadonlyNodeAndAppendClassName(node: AnyReactElement, ...someClasses: string[]) {
-  let unfreezedData = reactNodeUnfreezeReadonly(node as AnyReactElement)
-  const classNames = (unfreezedData.props?.className ?? "").split(' ')
-  classNames.push(...someClasses)
-  // @ts-ignore - satifies my own isExactlyAReactElement() check
-  unfreezedData['ref'] = "the_duck"
-  unfreezedData.props.className = classNames.join(' ')
-
-  return unfreezedData
-}
-
-function assertMakeSureFirstNodeIsInjectedByMyCSS(output: React.ReactNode) {
-  const isHasAny = 
-    (output as AnyReactElement).props.className?.includes(codeBlock__codeLine) ||
-    (output as AnyReactElement).props.class?.includes(codeBlock__codeLine)
-  if (!isHasAny) {
-    console.log("Test failed, node detected is:", output, ", css class it needs to have is:", codeBlock__codeLine)
-    throw panic("Missing CSS class at the first element")
-  }
-}
-
-// Might be the most evil function I've wrote so far
-function reactNodeUnfreezeReadonly<T extends Record<string | number, any>>(obj: T, visited = new WeakMap()): T {
-  // options tried:
-  //   { ...obj }                                 - object is not extensible.
-  //   Object.assign({}, obj)                     - object is not extensible.
-  //   structuredClone({}, obj)                   - The object can not be cloned.
-  //   delete obj[key]                            - Unable to delete property.
-  //   manual copy with cicular reference handled - seems to work
-  if (obj === null || typeof obj !== 'object') {
-    return obj;
-  }
-
-  if (visited.has(obj)) {
-    return visited.get(obj)
-  }
-
-  const clone = Array.isArray(obj) ? [] : {}
-  visited.set(obj, clone)
-
-  for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      // @ts-ignore - Extract<keyof T, string> CAN index {} (empty object)
-      clone[key] = reactNodeUnfreezeReadonly(obj[key], visited)
-    }
-  }
-
-  return clone as T
 }
