@@ -12,7 +12,8 @@ build:
 why: update_assets
   echo hi
   
-update: update_assets
+update:
   git add .
   git commit -m "{{CURRENT_TIME}} - update project status"
+  just update_assets
   git push
