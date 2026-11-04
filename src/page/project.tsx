@@ -14,9 +14,11 @@ const page__section = css`
   }
 `
 
+export const PROJECT_PAGE_ROOT_CLASSES = `${page__rootStyle} ${scrollbar} ${scrollbar__vertical} ${scrollbar__invs}`
+
 export default function ProjectPage(props: IProjectStat) {
   return (
-    <div id="root" class={`${page__rootStyle} ${scrollbar} ${scrollbar__vertical} ${scrollbar__invs}`}>
+    <>
       <ProjectHeader {...props} />
       <main class={`${page__main} ${GLOBAL_PROJECT_PAGE_INLINE_PADDING}`}>
         <ProjectSection name="Basically">
@@ -28,6 +30,6 @@ export default function ProjectPage(props: IProjectStat) {
           <ProjectStatTable {...props} />
         </ProjectSection>
       </main>
-    </div>
+    </>
   )
 }

@@ -4,7 +4,7 @@ import { createWordSlidingRandomizer, dumpCSS, render } from "./core"
 import { CURRENT_BUILD_DATE } from "./data"
 // ...
 import HomePage, { HOME_PAGE_CLASSES } from "./page"
-import ProjectPage from "./page/project"
+import ProjectPage, { PROJECT_PAGE_ROOT_CLASSES } from "./page/project"
 import ProjectSubpage from "./page/project-subpage"
 // ...
 import { copyDir, dplLogger } from "./utils"
@@ -81,7 +81,7 @@ for (const stat of projectCanidate) {
     copyDir(stat.assetsPath, `${outputFolder}/assets`)
   }
 
-  const pageOptions = { ...GLOBAL_PAGE_OPTIONS, basePath: ".." }
+  const pageOptions = { ...GLOBAL_PAGE_OPTIONS, basePath: "..", bodyClass: PROJECT_PAGE_ROOT_CLASSES }
   render(<ProjectPage {...stat} />, `./docs/${stat.id}/index.html`, pageOptions)
 
   for (const subPage of stat.pages) {
