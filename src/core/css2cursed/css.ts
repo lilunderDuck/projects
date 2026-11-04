@@ -1,15 +1,17 @@
 import { compile, serialize, stringify, type Element as CSSElement } from "stylis"
-import { panic } from "../../utils"
+import { panic, writeFile } from "../../utils"
 import { createSingleWordSlidingRandomizer } from "./dumb_random"
 
+const GENERATED_CSS_FILE_NAME = "orbital_precision_strike.css" as const
+
 const cachedCssValues = new Map<string, string>()
-export function dumpCSS() {
+export function dumpCSS(toPath: string) {
   let everything = ""
   for (const cssRule of cachedCssValues.values()) {
     everything += cssRule
   }
 
-  return everything
+  writeFile(`${toPath}/${GENERATED_CSS_FILE_NAME}`, everything)
 }
 
 const CSS_DEFAULT_HANDLER = cssAtomicHandler()

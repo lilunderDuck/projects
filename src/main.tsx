@@ -1,13 +1,13 @@
 import path from "node:path"
 // ...
-import { createWordSlidingRandomizer, render } from "./core"
+import { createWordSlidingRandomizer, dumpCSS, render } from "./core"
 import { CURRENT_BUILD_DATE } from "./data"
 // ...
 import HomePage, { HOME_PAGE_CLASSES } from "./page"
 import ProjectPage from "./page/project"
 import ProjectSubpage from "./page/project-subpage"
 // ...
-import { copyDir, dplLogger, ensureDirExist } from "./utils"
+import { copyDir, dplLogger } from "./utils"
 import { scanForProjectCandidate } from "./projectDiscovery"
 import "./codeBlockBootstrap"
 
@@ -66,22 +66,24 @@ render((
 
 for (const stat of projectCanidate) {
   const outputFolder = `./docs/${stat.id}`
-  ensureDirExist(outputFolder)
-  ensureDirExist(`${outputFolder}/assets`)
   if (stat.assetsPath) {
     copyDir(stat.assetsPath, `${outputFolder}/assets`)
   }
 
-  const pageOptions = { ...GLOBAL_PAGE_OPTIONS, baseStylePath: "../assets/base.css" }
+  const pageOptions = { ...GLOBAL_PAGE_OPTIONS, basePath: ".." }
   render(<ProjectPage {...stat} />, `./docs/${stat.id}/index.html`, pageOptions)
 
   for (const subPage of stat.pages) {
+    const PAGE_FILE_NAME = path.basename(subPage.path).replace(".md", ".html")
     render(
       <ProjectSubpage page={subPage} metadata={stat} />, 
-      `./docs/${stat.id}/${path.basename(subPage.path).replace(".md", ".html")}`, 
+      `./docs/${stat.id}/${PAGE_FILE_NAME}`, 
       pageOptions
     )
   }
 }
+
+dplLogger.info("Dumping all CSS...")
+dumpCSS("./docs/assets")
 
 dplLogger.info("Done :)")

@@ -3,7 +3,6 @@ import type { JSX } from "react"
 import path from "node:path"
 // ...
 import { recursivelyRenderJSXFast } from "./renderReactElement"
-import { dumpCSS } from "../css2cursed"
 
 declare global {
   // only be used for its jsx types
@@ -23,22 +22,17 @@ declare global {
 export interface IRenderHtmlOption {
   title: string
   description?: string
-  /**Additional CSS (e.g global styles) to the page, default will be
-   * the generated CSS output by `dumpCSS()` function.
-   * @default "... css output ..."
-   * @see {@link css}
-   * @see {@link dumpCSS()}
-   */
+  /**Additional CSS (e.g global styles) to the page */
   css?: string
   bodyClass?: string
-  baseStylePath?: string
+  basePath?: string
 }
 
 export function render(component: JSX.Element, to: string, withOptions?: IRenderHtmlOption) {
   withOptions = {
     description: "Tracking which weird project duck is currently doing",
     title: "Duck's project index",
-    baseStylePath: "./assets/base.css",
+    basePath: ".",
     ...withOptions,
   }
 
@@ -48,24 +42,31 @@ export function render(component: JSX.Element, to: string, withOptions?: IRender
     </style>
   `
 
+  const BASE_STYLE_PATH = `${withOptions.basePath}/assets/base.css` as const
+  const GENERATED_CSS_STYLE_PATH = `${withOptions.basePath}/assets/orbital_precision_strike.css`
+
   fs.mkdirSync(path.dirname(to), { recursive: true })
-  fs.writeFileSync(to, `
+
+  const HTML_MARKUP = `
     <!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width">
         <title>${withOptions.title}</title>
-        <link rel="stylesheet" href="${withOptions.baseStylePath}">
+        <link rel="stylesheet" href="${BASE_STYLE_PATH}">
+        <link rel="stylesheet" href="${GENERATED_CSS_STYLE_PATH}">
         <meta name="description" content="${withOptions.description}">
         <meta name="duck" content="this is duck">
         ${NO_FLASHBANG_WORKAROUND}
-        <style data-inline>${`${withOptions.css ?? ""} ${dumpCSS()}`.trim()}</style>
+        <style data-inline>${`${withOptions.css ?? ""}`.trim()}</style>
       </head>
       <body${withOptions.bodyClass ? ` class="${withOptions.bodyClass}"` : ""}>
         <!-- You won't believe this is not using react -->
         ${recursivelyRenderJSXFast(component)}
       </body>
     </html>
-  `)
+  `
+
+  fs.writeFileSync(to, HTML_MARKUP)
 }

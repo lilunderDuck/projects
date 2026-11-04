@@ -12,7 +12,18 @@ export function readFile(from: string) {
   }
 }
 
+export function writeFile(to: string, content: any) {
+  let contentToWrite = ""
+  if (typeof content === "string") {
+    contentToWrite = content
+  } else {
+    contentToWrite = JSON.stringify(content)
+  }
+  fs.writeFileSync(to, contentToWrite)
+}
+
 export function copyDir(fromPath: string, toPath: string) {
+  ensureDirExist(toPath)
   fs.cpSync(fromPath, toPath, { recursive: true })
 }
 
