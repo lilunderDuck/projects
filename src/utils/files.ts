@@ -1,4 +1,5 @@
 import fs from "node:fs"
+import path from "node:path"
 
 export function isFileOrDirExist(onThisPath: string) {
   return fs.existsSync(onThisPath)
@@ -13,6 +14,7 @@ export function readFile(from: string) {
 }
 
 export function writeFile(to: string, content: any) {
+  ensureDirExist(path.dirname(to))
   let contentToWrite = ""
   if (typeof content === "string") {
     contentToWrite = content
