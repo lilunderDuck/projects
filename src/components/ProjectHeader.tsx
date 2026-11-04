@@ -56,33 +56,9 @@ const header__bannerImage = css`
   object-fit: cover;
 `
 
-const header__backButton = css`
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  background-color: var(--mantle);
-  z-index: 10;
-  font-size: 1.5rem;
-  padding-inline: 10px;
-  padding-block: 5px;
-  margin-left: 2rem;
-  margin-top: 20px;
-  opacity: 0.6;
-  &:hover {
-    opacity: 1;
-  }
-`
-
 export function ProjectHeader(props: IProjectStat) {
   return (
     <header class={header__root}>
-      <a data-link-no-color class={header__backButton} href="../index.html">
-        <BsCaretLeftFill size="2rem" />
-        Back
-      </a>
       <Show when={props.banner} fallback={
         <div class={`${header__bannerImage} ${header__headerImgBorder}`}>
           <div class={header__missingBannerImage} />
