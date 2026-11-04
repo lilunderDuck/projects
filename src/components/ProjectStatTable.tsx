@@ -60,7 +60,7 @@ export function ProjectStatTable(props: IProjectStat) {
     {
       name: "Github url",
       stuff: props.repoUrl ? (
-        <a href={props.repoUrl} target="_blank">{props.title}</a>
+        <a href={props.repoUrl} target="_blank">{props.repoUrl}</a>
       ) : NONE_TAG
     },
     {
