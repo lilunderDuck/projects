@@ -13,7 +13,7 @@ export default function ProjectSubpage(props: {
 }) {
   return (
     <>
-      <BackToHomeButton />
+      <BackToHomeButton href={`./index.html`} label={"Back to this project"} />
       <div id="root" class={`${page__rootStyle} ${scrollbar} ${scrollbar__vertical} ${scrollbar__invs}`}>
         <ProjectHeader {...props.metadata} />
         <main class={`${page__main} ${GLOBAL_PROJECT_PAGE_INLINE_PADDING}`}>

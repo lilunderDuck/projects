@@ -24,12 +24,17 @@ const button__backButton = css`
   }
 `
 
-export function BackToHomeButton() {
+interface IBackToHomeButtonProps {
+  href?: string
+  label?: string
+}
+
+export function BackToHomeButton(props: IBackToHomeButtonProps) {
   return (
     <div class={button__root}>
-      <a data-link-no-color class={button__backButton} href="../index.html">
+      <a data-link-no-color class={button__backButton} href={props.href ?? "../index.html"}>
         <BsCaretLeftFill size="2rem" />
-        Back
+        {props.label ?? "Back to home"}
       </a>
     </div>
   )
