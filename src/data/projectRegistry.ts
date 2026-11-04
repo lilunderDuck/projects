@@ -21,7 +21,7 @@ export const PROJECT_STATUS_REGISTRY = createRegistry<ProjectStatusRegistry>({
   },
   stopped: {
     color: "var(--red)",
-    description: "mint_duck has stopped maintaining this project (due to motivation loss for example)"
+    description: "mint_duck has stopped maintaining this project"
   }
 })
 
