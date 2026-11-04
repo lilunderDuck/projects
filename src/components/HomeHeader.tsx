@@ -1,4 +1,5 @@
 import { css } from "../core"
+import { HOME_PAGE_TITLE_HEADER, HOME_PAGE_TITLE_WRAPPER_HEADER } from "../main"
 
 const page__header = css`
   width: 100%;
@@ -25,7 +26,6 @@ const page__header = css`
 
 const page__title = css`
   text-align: center;
-  font-size: 3.5rem;
 `
 
 const page__description = css`
@@ -43,8 +43,8 @@ export function HomeHeader(props: { buildDate: string }) {
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
         <path fill="#181825" fill-opacity="1" d="M0,256L60,250.7C120,245,240,235,360,240C480,245,600,267,720,266.7C840,267,960,245,1080,240C1200,235,1320,245,1380,250.7L1440,256L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"></path>
       </svg>
-      <div>
-        <h1 class={page__title}>The duck's project index</h1>
+      <div class={HOME_PAGE_TITLE_WRAPPER_HEADER}>
+        <h1 class={`${page__title} ${HOME_PAGE_TITLE_HEADER}`}>The duck's project index</h1>
         <p class={page__description}>
           Some projects <a href="https://github.com/lilunderDuck" target="_blank">
             mint_duck

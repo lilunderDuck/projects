@@ -13,6 +13,8 @@ import "./codeBlockBootstrap"
 
 const randomizer = createWordSlidingRandomizer()
 export const GLOBAL_PROJECT_PAGE_INLINE_PADDING = randomizer(8)
+export const HOME_PAGE_TITLE_HEADER = randomizer(8)
+export const HOME_PAGE_TITLE_WRAPPER_HEADER = randomizer(8)
 
 const GLOBAL_STYLE = `
   @keyframes dot_grid_move {
@@ -40,12 +42,21 @@ const GLOBAL_STYLE = `
     }
   }
 
-  @media screen and (max-width: 650px) {
-    .${GLOBAL_PROJECT_PAGE_INLINE_PADDING} { padding-inline: 2rem; }
+
+  .${GLOBAL_PROJECT_PAGE_INLINE_PADDING} { padding-inline: 4rem; }
+  .${HOME_PAGE_TITLE_HEADER} {
+    font-size: 3.5rem;
   }
 
-  @media screen and (min-width: 650px) {
-    .${GLOBAL_PROJECT_PAGE_INLINE_PADDING} { padding-inline: 4rem; }
+  @media screen and (max-width: 750px) {
+    .${GLOBAL_PROJECT_PAGE_INLINE_PADDING} { padding-inline: 1rem; }
+    .${HOME_PAGE_TITLE_HEADER} {
+      font-size: 2.5rem;
+    }
+
+    .${HOME_PAGE_TITLE_WRAPPER_HEADER} {
+      padding-inline: 20px;
+    }
   }
 `
 
