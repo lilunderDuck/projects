@@ -1,17 +1,35 @@
 import { compile, serialize, stringify, type Element as CSSElement } from "stylis"
+import { lightningCss } from "@node-minify/lightningcss"
+// ...
 import { panic, writeFile } from "../../utils"
 import { RANDOMIZER } from "./dumb_random"
+import { minify } from "@node-minify/core"
 
 const GENERATED_CSS_FILE_NAME = "orbital_precision_strike.css" as const
-
 const cachedCssValues = new Map<string, string>()
-export function dumpCSS(toPath: string, initialCss: string) {
+
+export async function dumpCSS(toPath: string, initialCss: string) {
   let everything = ""
   for (const cssRule of cachedCssValues.values()) {
     everything += cssRule
   }
 
-  writeFile(`${toPath}/${GENERATED_CSS_FILE_NAME}`, `${initialCss}${everything}`)
+  writeFile(`${toPath}/${GENERATED_CSS_FILE_NAME}`, await minifyCSS(`${initialCss}${everything}`))
+}
+
+export function minifyCSS(source: string) {
+  return minify({
+    compressor: lightningCss,
+    content: source
+  })
+}
+
+export function minifyCSSFromFile(target: string, to: string) {
+  return minify({
+    compressor: lightningCss,
+    input: target,
+    output: to
+  })
 }
 
 export function createCSSVar() {

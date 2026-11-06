@@ -1,6 +1,6 @@
 import path from "node:path"
 // ...
-import { dumpCSS, HASH_RANDOMIZER, RANDOMIZER, render } from "./core"
+import { dumpCSS, HASH_RANDOMIZER, minifyCSSFromFile, RANDOMIZER, render } from "./core"
 import { CURRENT_BUILD_DATE } from "./data"
 // ...
 import HomePage, { HOME_PAGE_CLASSES } from "./page"
@@ -68,7 +68,7 @@ const GLOBAL_PAGE_OPTIONS = {
 const projectCanidate = await scanForProjectCandidate("D:/projects")
 
 dplLogger.info("begin rendering all pages...")
-render((
+await render((
   <HomePage 
     buildDate={CURRENT_BUILD_DATE} 
     projectList={projectCanidate} 
@@ -82,11 +82,11 @@ for (const stat of projectCanidate) {
   }
 
   const pageOptions = { ...GLOBAL_PAGE_OPTIONS, basePath: ".." }
-  render(<ProjectPage {...stat} />, `./docs/${stat.id}/index.html`, pageOptions)
+  await render(<ProjectPage {...stat} />, `./docs/${stat.id}/index.html`, pageOptions)
 
   for (const subPage of stat.pages) {
     const PAGE_FILE_NAME = path.basename(subPage.path).replace(".md", ".html")
-    render(
+    await render(
       <ProjectSubpage page={subPage} metadata={stat} />, 
       `./docs/${stat.id}/${PAGE_FILE_NAME}`, 
       pageOptions
@@ -96,5 +96,7 @@ for (const stat of projectCanidate) {
 
 dplLogger.info("Dumping all CSS...")
 dumpCSS("./docs/assets", GLOBAL_STYLE)
+
+minifyCSSFromFile("./src/assets/base.css", "./docs/assets/base.css")
 
 dplLogger.info("Done :)")

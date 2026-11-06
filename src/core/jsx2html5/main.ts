@@ -1,6 +1,8 @@
 import fs from "node:fs"
 import type { JSX } from "react"
 import path from "node:path"
+import { minify } from "@node-minify/core"
+import { minifyHtml } from "@node-minify/minify-html"
 // ...
 import { recursivelyRenderJSXFast } from "./renderReactElement"
 
@@ -26,7 +28,7 @@ export interface IRenderHtmlOption {
   basePath?: string
 }
 
-export function render(component: JSX.Element, to: string, withOptions?: IRenderHtmlOption) {
+export async function render(component: JSX.Element, to: string, withOptions?: IRenderHtmlOption) {
   withOptions = {
     description: "Tracking which weird project duck is currently doing",
     title: "Duck's project index",
@@ -65,5 +67,8 @@ export function render(component: JSX.Element, to: string, withOptions?: IRender
     </html>
   `
 
-  fs.writeFileSync(to, HTML_MARKUP)
+  fs.writeFileSync(to, await minify({
+    compressor: minifyHtml,
+    content: HTML_MARKUP
+  }))
 }

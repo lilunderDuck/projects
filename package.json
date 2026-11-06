@@ -10,6 +10,9 @@
     "typescript": "^7"
   },
   "dependencies": {
+    "@node-minify/core": "^11.0.0",
+    "@node-minify/lightningcss": "^11.0.0",
+    "@node-minify/minify-html": "^11.0.0",
     "@types/prismjs": "^1.26.6",
     "@types/react": "^19.3.0",
     "@types/stylis": "^4.2.7",
