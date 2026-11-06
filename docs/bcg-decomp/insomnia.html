@@ -1,81 +1,18 @@
+<!doctype html><html lang=en><meta charset=utf-8><meta content="width=device-width" name=viewport><title>Duck's project index</title><link href=../assets/base.css rel=stylesheet><link href=../assets/orbital_precision_strike.css rel=stylesheet><meta content="Tracking which weird project duck is currently doing" name=description><meta content="this is duck" name=duck><style data-why="prevent flashbang when reload/open this">html{background-color:#11111b}</style><body><div class="e20 r12 i20 t17 o6 b2"><a class="t18 a5 i21 n7 s16 a6 d i22 f2" data-link-no-color=true href=./index.html><svg viewbox="0 0 16 16" color=currentColor fill=currentColor height=2rem style=overflow:visible width=2rem xmlns=http://www.w3.org/2000/svg><path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"></path></svg>Back to this project</a></div><div class="f3 e21 r13 g2 u2 i25 a8" id=root><header class="s11 f r4 o3 m2 w6 h5 e11 r5"><img class="f1 r8 o5 e12" src=./assets/banner.png><div class="i13 s12 n5 t12 o4 r6 w7"></div><div class="h6 e13 r7 e14 _1f3e42e4"><span class="i12 t11">BigChadGuys+ decompilation</span><p>Decompilation of a minecraft modpack called: <a href=https://www.curseforge.com/minecraft/modpacks/bcgnc target=_blank>BigChadGuys+ (Non Cobblemon!)</a> by <a href=https://www.curseforge.com/members/jflec/projects target=_blank>jflec</a> (with some additional mods) for fabric 1.20.1</div></header><main class="o11 _1f3e42e4"><section class="h3 e7"><div class="r1 e8 i7 t6"><span class="i8 s9 n3 t7 B y s10 u1 b1">Some stuff</span><div class="t8 r2 a3 c1"></div></div><h1>Update this if you're confused about some Java error messages</h1><hr><pre class="e28 s21 d3 e29 v2 i26"><span class="e27 m4 u4 s20"><span class=c4>// net/minecraft/network/packet/c2s/play/ClickSlotC2SPacket.java</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>private</span><span class=n10> final</span><span class=n10> Int2ObjectMap</span><span class=c4>&lt;</span><span class=n10>ItemStack</span><span class=c4>></span><span class=t20> modifiedStacks</span><span class=c4>;</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>// ...</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>public</span><span class=e26> ClickSlotC2SPacket</span><span class=c4>(</span><span class=n10>PacketByteBuf</span><span class=t20> $$0</span><span class=c4>)</span><span class=c4> {</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>  // $$0 is PacketByteBuf</span></span>
+<span class="e27 m4 u4 s20"><span class=s17>  this</span><span class=c4>.</span><span class=t20>modifiedStacks </span><span class=b3>=</span><span class=t20> Int2ObjectMaps</span><span class=c4>.</span><span class=e26>unmodifiable</span><span class=c4>(</span><span class=t20>$$0</span><span class=c4>.</span><span class=e26>readMap</span><span class=c4>(</span><span class=c4>/* ... */</span><span class=c4>));</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>    //                                                  ^^^^^^^</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>    // (1) no instance(s) of type variable(s) exist so that Short conforms to Integer inference variable K has incompatible bounds: equality constraints: Integer lower bounds: Short</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>}</span></span>
 
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width">
-        <title>Duck's project index</title>
-        <link rel="stylesheet" href="../assets/base.css">
-        <link rel="stylesheet" href="../assets/orbital_precision_strike.css">
-        <meta name="description" content="Tracking which weird project duck is currently doing">
-        <meta name="duck" content="this is duck">
-        
-    <style data-why="prevent flashbang when reload/open this">
-      html {background-color: #11111b}
-    </style>
-  
-        <style data-inline>@keyframes dot_grid_move {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: 40px -40px;
-    }
-  }
+<span class="e27 m4 u4 s20"><span class=c4>// net/minecraft/network/PacketByteBuf.java</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>// ...</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>public</span><span class=b3> &lt;</span><span class=t20>K</span><span class=c4>,</span><span class=t20> V</span><span class=c4>,</span><span class=n10> M</span><span class=t20> extends </span><span class=n10>Map</span><span class=b3>&lt;</span><span class=t20>K</span><span class=c4>,</span><span class=t20> V</span><span class=b3>>></span><span class=n10> M</span><span class=e26> readMap</span><span class=c4>(</span><span class=n10>IntFunction</span><span class=b3>&lt;</span><span class=t20>M</span><span class=b3>></span><span class=t20> $$0</span><span class=c4>,</span><span class=n10> PacketReader</span><span class=b3>&lt;</span><span class=t20>K</span><span class=b3>></span><span class=t20> $$1</span><span class=c4>,</span><span class=n10> PacketReader</span><span class=b3>&lt;</span><span class=t20>V</span><span class=b3>></span><span class=t20> $$2</span><span class=c4>)</span><span class=c4> {</span><span class=c4>/* ... */</span><span class=c4>}</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>// ...</span></span>
 
-  @keyframes cube__spinningAnimation {
-    0% {
-      transform: rotateX(-20deg) rotateY(20deg);
-    }
-
-    100% {
-      transform: rotateX(-20deg) rotateY(740deg);
-    }
-  }
-
-  @media screen and (max-width: 920px) {
-    pre {
-      word-break: break-all;
-    }
-  }
-
-
-  .the_missile_knows_where_it_is_at_all { padding-inline: 4rem; }
-  .all_times_dot__it_knows_this_because_it_knows {
-    font-size: 3.5rem;
-  }
-
-  @media screen and (max-width: 750px) {
-    .the_missile_knows_where_it_is_at_all { padding-inline: 1rem; }
-    .all_times_dot__it_knows_this_because_it_knows {
-      font-size: 2.5rem;
-    }
-
-    .knows_where_it_isnt_dot__by_subtracting_where_it {
-      padding-inline: 20px;
-    }
-  }</style>
-      </head>
-      <body>
-        <!-- You won't believe this is not using react -->
-        <div class="them known to_the game registering things"><a data-link-no-color="true" class="is_important_ as_without registration_the game_will simply not_know about these objects_" href="./index.html"><svg fill="currentColor" viewBox="0 0 16 16" color="currentColor" height="2rem" width="2rem" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;"><path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"></path></svg>Back to this project</a></div><div id="root" class="which_will cause unexplainable be_unique within the_same registry_ but the_same_registry name may_be in"><header class="gea however_ the_missile_must also know where_it_wasthe missile_guidance computer scenario"><img class="knows_where it_was it_now_subtracts works" src="./assets/banner.png"><div class="because_a variation_has modified some of the_information the_missile_has"></div><div class="obtained_ it_is not sure the_missile_knows_where_it_is_at_all"><span class="as follows">BigChadGuys+ decompilation</span><p>Decompilation of a minecraft modpack called: <a href="https://www.curseforge.com/minecraft/modpacks/bcgnc" target="_blank">BigChadGuys+ (Non Cobblemon!)</a> by <a href="https://www.curseforge.com/members/jflec/projects" target="_blank">jflec</a> (with some additional mods) for fabric 1.20.1</p></div></header><main class="registry_name_of the_missile_knows_where_it_is_at_all"><section class="position_that it_isntin "><div class="the_event that_the position_that_it is_in"><span class="is_not the_position_that_it_wasnt_ the_system has acquired a_variation_ the_variation being the_difference">Some stuff</span><div class="between where_the missile_is_ and"></div></div><h1>Update this if you're confused about some Java error messages</h1><hr></hr><pre class="form with the_same_registry_name _in_the items registry_every"><span class="registry__that have an item"><span class="registries">// net/minecraft/network/packet/c2s/play/ClickSlotC2SPacket.java</span></span>
-<span class="registry__that have an item"><span class="multiple">private</span><span class="multiple"> final</span><span class="multiple"> Int2ObjectMap</span><span class="registries"><</span><span class="multiple">ItemStack</span><span class="registries">></span><span class="the_blocks"> modifiedStacks</span><span class="registries">;</span></span>
-<span class="registry__that have an item"><span class="registries">// ...</span></span>
-<span class="registry__that have an item"><span class="multiple">public</span><span class="the_most"> ClickSlotC2SPacket</span><span class="registries">(</span><span class="multiple">PacketByteBuf</span><span class="the_blocks"> $$0</span><span class="registries">)</span><span class="registries"> {</span></span>
-<span class="registry__that have an item"><span class="registries">  // $$0 is PacketByteBuf</span></span>
-<span class="registry__that have an item"><span class="common">  this</span><span class="registries">.</span><span class="the_blocks">modifiedStacks </span><span class="for">=</span><span class="the_blocks"> Int2ObjectMaps</span><span class="registries">.</span><span class="the_most">unmodifiable</span><span class="registries">(</span><span class="the_blocks">$$0</span><span class="registries">.</span><span class="the_most">readMap</span><span class="registries">(</span><span class="registries">/* ... */</span><span class="registries">));</span></span>
-<span class="registry__that have an item"><span class="registries">    //                                                  ^^^^^^^</span></span>
-<span class="registry__that have an item"><span class="registries">    // (1) no instance(s) of type variable(s) exist so that Short conforms to Integer inference variable K has incompatible bounds: equality constraints: Integer lower bounds: Short</span></span>
-<span class="registry__that have an item"><span class="registries">}</span></span>
-
-<span class="registry__that have an item"><span class="registries">// net/minecraft/network/PacketByteBuf.java</span></span>
-<span class="registry__that have an item"><span class="registries">// ...</span></span>
-<span class="registry__that have an item"><span class="multiple">public</span><span class="for"> <</span><span class="the_blocks">K</span><span class="registries">,</span><span class="the_blocks"> V</span><span class="registries">,</span><span class="multiple"> M</span><span class="the_blocks"> extends </span><span class="multiple">Map</span><span class="for"><</span><span class="the_blocks">K</span><span class="registries">,</span><span class="the_blocks"> V</span><span class="for">>></span><span class="multiple"> M</span><span class="the_most"> readMap</span><span class="registries">(</span><span class="multiple">IntFunction</span><span class="for"><</span><span class="the_blocks">M</span><span class="for">></span><span class="the_blocks"> $$0</span><span class="registries">,</span><span class="multiple"> PacketReader</span><span class="for"><</span><span class="the_blocks">K</span><span class="for">></span><span class="the_blocks"> $$1</span><span class="registries">,</span><span class="multiple"> PacketReader</span><span class="for"><</span><span class="the_blocks">V</span><span class="for">></span><span class="the_blocks"> $$2</span><span class="registries">)</span><span class="registries"> {</span><span class="registries">/* ... */</span><span class="registries">}</span></span>
-<span class="registry__that have an item"><span class="registries">// ...</span></span>
-
-</pre><p>Where tf is Short even coming from?????????</p><p>Update, damn it, it was:</p><pre class="form with the_same_registry_name _in_the items registry_every"><span class="registry__that have an item"><span class="the_blocks">Int2ObjectMaps</span><span class="registries">.</span><span class="the_most">unmodifiable</span><span class="registries">(</span><span class="the_blocks">$$0</span><span class="registries">.</span><span class="for"><</span><span class="the_blocks">Short</span><span class="registries">,</span><span class="the_blocks"> ItemStack</span><span class="registries">,</span><span class="multiple"> Map</span><span class="for"><</span><span class="the_blocks">Short</span><span class="registries">,</span><span class="the_blocks"> ItemStack</span><span class="for">>></span><span class="the_most">readMap</span><span class="registries">(</span><span class="registries">/* ... */</span><span class="registries">));</span></span>
-<span class="registry__that have an item"><span class="registries">// missing generics             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span></span>
-</pre><hr></hr></section></main></div>
-      </body>
-    </html>
-  
+</pre><p>Where tf is Short even coming from?????????<p>Update, damn it, it was:<pre class="e28 s21 d3 e29 v2 i26"><span class="e27 m4 u4 s20"><span class=t20>Int2ObjectMaps</span><span class=c4>.</span><span class=e26>unmodifiable</span><span class=c4>(</span><span class=t20>$$0</span><span class=c4>.</span><span class=b3>&lt;</span><span class=t20>Short</span><span class=c4>,</span><span class=t20> ItemStack</span><span class=c4>,</span><span class=n10> Map</span><span class=b3>&lt;</span><span class=t20>Short</span><span class=c4>,</span><span class=t20> ItemStack</span><span class=b3>>></span><span class=e26>readMap</span><span class=c4>(</span><span class=c4>/* ... */</span><span class=c4>));</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>// missing generics             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span></span>
+</pre><hr></section></main></div>

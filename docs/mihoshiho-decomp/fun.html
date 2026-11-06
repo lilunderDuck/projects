@@ -1,134 +1,67 @@
-
-    <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width">
-        <title>Duck's project index</title>
-        <link rel="stylesheet" href="../assets/base.css">
-        <link rel="stylesheet" href="../assets/orbital_precision_strike.css">
-        <meta name="description" content="Tracking which weird project duck is currently doing">
-        <meta name="duck" content="this is duck">
-        
-    <style data-why="prevent flashbang when reload/open this">
-      html {background-color: #11111b}
-    </style>
-  
-        <style data-inline>@keyframes dot_grid_move {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: 40px -40px;
-    }
-  }
-
-  @keyframes cube__spinningAnimation {
-    0% {
-      transform: rotateX(-20deg) rotateY(20deg);
-    }
-
-    100% {
-      transform: rotateX(-20deg) rotateY(740deg);
-    }
-  }
-
-  @media screen and (max-width: 920px) {
-    pre {
-      word-break: break-all;
-    }
-  }
-
-
-  .the_missile_knows_where_it_is_at_all { padding-inline: 4rem; }
-  .all_times_dot__it_knows_this_because_it_knows {
-    font-size: 3.5rem;
-  }
-
-  @media screen and (max-width: 750px) {
-    .the_missile_knows_where_it_is_at_all { padding-inline: 1rem; }
-    .all_times_dot__it_knows_this_because_it_knows {
-      font-size: 2.5rem;
-    }
-
-    .knows_where_it_isnt_dot__by_subtracting_where_it {
-      padding-inline: 20px;
-    }
-  }</style>
-      </head>
-      <body>
-        <!-- You won't believe this is not using react -->
-        <div class="them known to_the game registering things"><a data-link-no-color="true" class="is_important_ as_without registration_the game_will simply not_know about these objects_" href="./index.html"><svg fill="currentColor" viewBox="0 0 16 16" color="currentColor" height="2rem" width="2rem" xmlns="http://www.w3.org/2000/svg" style="overflow: visible;"><path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"></path></svg>Back to this project</a></div><div id="root" class="which_will cause unexplainable be_unique within the_same registry_ but the_same_registry name may_be in"><header class="gea however_ the_missile_must also know where_it_wasthe missile_guidance computer scenario"><img class="knows_where it_was it_now_subtracts works" src="./assets/banner.png"><div class="because_a variation_has modified some of the_information the_missile_has"></div><div class="obtained_ it_is not sure the_missile_knows_where_it_is_at_all"><span class="as follows">Mihoshiho decompilation</span><p>A (soft) decompilation of the game: <a href="https://redtomatochicken.itch.io/mihoshiho" target="_blank">Mihoshiho - It Will Be Okay!</a> on itch.io, because the last part of the game is almost impossible to pass thourgh</p></div></header><main class="registry_name_of the_missile_knows_where_it_is_at_all"><section class="position_that it_isntin "><div class="the_event that_the position_that_it is_in"><span class="is_not the_position_that_it_wasnt_ the_system has acquired a_variation_ the_variation being the_difference">Some stuff</span><div class="between where_the missile_is_ and"></div></div><h1>Interesting stuff I found</h1><h2>Bullets random luck RNG</h2><p>The reason the final part I feel... inconsistent and making me confused to why I was alive 5 seconds before and then I respawned the moment I touched the missile is because...</p><pre class="form with the_same_registry_name _in_the items registry_every"><span class="registry__that have an item"><span class="registries"># script/entity/Bullet.gd - included the original dev(s) comment</span></span>
-<span class="registry__that have an item"><span class="multiple">func</span><span class="the_most"> processInteraction</span><span class="registries">(</span><span class="example">delta</span><span class="registries">):</span></span>
-<span class="registry__that have an item"><span class="registries">    # ...</span></span>
-<span class="registry__that have an item"><span class="multiple">    else</span><span class="the_blocks">:	</span></span>
-<span class="registry__that have an item"><span class="multiple">        if</span><span class="the_blocks"> isHit:</span></span>
-<span class="registry__that have an item"><span class="the_blocks">            isHit </span><span class="for">=</span><span class="common"> false</span></span>
-<span class="registry__that have an item"><span class="multiple">            return</span></span>
-<span class="registry__that have an item"><span class="multiple">    if</span><span class="the_most"> randi_range</span><span class="registries">(</span><span class="this_are">1</span><span class="registries">,</span><span class="this_are">60</span><span class="registries">)</span><span class="for"> <=</span><span class="this_are"> 3</span><span class="the_blocks">: </span><span class="registries"># mint_duck: now I see why...</span></span>
-<span class="registry__that have an item"><span class="registries">      # 3 frame invincibility window</span></span>
-<span class="registry__that have an item"><span class="registries">      # is random though</span></span>
-<span class="registry__that have an item"><span class="multiple">      return</span></span>
-<span class="registry__that have an item"><span class="multiple">    if</span><span class="for"> !</span><span class="the_blocks">gameManager</span><span class="for">.</span><span class="the_blocks">isInCutscene:</span></span>
-<span class="registry__that have an item"><span class="registries">      # ... teleport you back to the last checkpoint ...</span></span>
-<span class="registry__that have an item"><span class="the_blocks">    isHit </span><span class="for">=</span><span class="common"> false</span></span>
-<span class="registry__that have an item"><span class="multiple">    return</span></span>
-<span class="registry__that have an item"><span class="the_blocks">        </span></span>
-<span class="registry__that have an item"><span class="the_most">    doMovement</span><span class="registries">(</span><span class="example">delta</span><span class="registries">)</span></span>
-</pre><p>But we can patch it up by granting Miho literal god mode and brick the entire universe:</p><pre class="form with the_same_registry_name _in_the items registry_every"><span class="registry__that have an item"><span class="registries"># script/entity/Bullet.gd</span></span>
-<span class="registry__that have an item"><span class="multiple">func</span><span class="the_most"> processInteraction</span><span class="registries">(</span><span class="example">delta</span><span class="registries">):</span></span>
-<span class="registry__that have an item"><span class="registries">    # ...</span></span>
-<span class="registry__that have an item"><span class="multiple">    else</span><span class="the_blocks">:</span></span>
-<span class="registry__that have an item"><span class="registries">    # if miho hits a bullet</span></span>
-<span class="registry__that have an item"><span class="multiple">    if</span><span class="the_blocks"> isHit:</span></span>
-<span class="registry__that have an item"><span class="multiple">      return</span><span class="registries"> # tell the game "he's fine, don't do anything else"</span></span>
-<span class="registry__that have an item"><span class="multiple">    if</span><span class="the_most"> randi_range</span><span class="registries">(</span><span class="this_are">1</span><span class="registries">,</span><span class="this_are">60</span><span class="registries">)</span><span class="for"> <=</span><span class="this_are"> 3</span><span class="the_blocks">:</span></span>
-<span class="registry__that have an item"><span class="registries">      # ... the rest of the function ...</span></span>
-</pre><p>And here we go, Miho have reached immortality :)</p><html><video controls>
-  <source src="./assets/patch_result.mp4" type="video/mp4">
-</video>
-</html><h2>Window size flickering bug</h2><p>I guess this is because the game instantly updates the window resolution on the setting menu when I slide through the options. <strong>Rapid flashing warning for sensitive people!!</strong></p><html><video controls>
-  <source src="./assets/setting_resolution_bug.mp4" type="video/mp4">
-</video>
-</html><p>I might have to look why the game is freaking out when changing resolution, gonna update if I found it.</p><h2>Second ending condition</h2><p>We can absolutely find it by... guessing, yes.</p><p>If you interact with this bed on 4th floor in the final act, the game simply tell you this:
-<img src="./assets/final_act.png" alt="final act"></p><p>But <em>when</em> that dialog show to you?</p><p>This:</p><pre class="form with the_same_registry_name _in_the items registry_every"><span class="registry__that have an item"><span class="registries"># script/textbox/TextboxCanvasLayer.gd - included the original dev(s) comment</span></span>
-<span class="registry__that have an item"><span class="multiple">func</span><span class="the_most"> _process</span><span class="registries">(</span><span class="example">delta</span><span class="registries">):</span></span>
-<span class="registry__that have an item"><span class="registries">  # ... omitted ...</span></span>
-<span class="registry__that have an item"><span class="multiple">    if</span><span class="the_blocks"> done:</span></span>
-<span class="registry__that have an item"><span class="multiple">        if</span><span class="for"> !</span><span class="the_blocks">isTransitionOut </span><span class="for">and</span><span class="the_blocks"> hideArm </span><span class="for">and</span><span class="_in"> Input</span><span class="the_blocks">.</span><span class="the_most">is_action_just_released</span><span class="registries">(</span><span class="blocks">"Action_Confirm"</span><span class="registries">,</span><span class="common">true</span><span class="registries">)</span><span class="the_blocks">:</span></span>
-<span class="registry__that have an item"><span class="registries">            # ...</span></span>
-<span class="registry__that have an item"><span class="multiple">            if</span><span class="the_blocks"> isYesnoquestion:</span></span>
-<span class="registry__that have an item"><span class="registries">                #code to run if yes no question is enabled</span></span>
-<span class="registry__that have an item"><span class="multiple">                match</span><span class="the_blocks"> entityRef</span><span class="for">.</span><span class="the_blocks">confirmationType:</span></span>
-<span class="registry__that have an item"><span class="registries">          # ... omitted ...</span></span>
-<span class="registry__that have an item"><span class="blocks">          "mihoHospitalBed"</span><span class="the_blocks">:</span></span>
-<span class="registry__that have an item"><span class="multiple">            if</span><span class="the_blocks"> gameManager</span><span class="for">.</span><span class="the_blocks">flags</span><span class="registries">[</span><span class="blocks">"isTimeLoop"</span><span class="registries">]</span><span class="the_blocks">: </span><span class="registries"># <- mint_duck: this flag</span></span>
-<span class="registry__that have an item"><span class="the_most">              print</span><span class="registries">(</span><span class="blocks">"Showing hospital bed cutscene reveal"</span><span class="registries">)</span></span>
-<span class="registry__that have an item"><span class="the_blocks">              gameManager.</span><span class="the_most">populateMihoHospitalBedCutscene</span><span class="registries">()</span></span>
-<span class="registry__that have an item"><span class="the_blocks">              gameManager.</span><span class="the_most">startCutscene</span><span class="registries">(</span><span class="example">gameManager</span><span class="for">.</span><span class="example">MihoHospitalBedCutscene</span><span class="registries">)</span></span>
-<span class="registry__that have an item"><span class="multiple">            else</span><span class="the_blocks">:</span></span>
-<span class="registry__that have an item"><span class="multiple">              await</span><span class="the_blocks"> dialogFinished</span></span>
-<span class="registry__that have an item"><span class="the_most">              trigger</span><span class="registries">(</span><span class="blocks">"Miho"</span><span class="registries">,</span><span class="blocks">"I'm too scared to look..."</span><span class="registries">)</span><span class="registries"> # mint_duck: found 'em</span></span>
-<span class="registry__that have an item"><span class="registries">          # ... omitted ...</span></span>
-</pre><p>Searching <code>flags["isTimeLoop"]</code> eventually led us to:</p><pre class="form with the_same_registry_name _in_the items registry_every"><span class="registry__that have an item"><span class="registries"># script/gameManager.gd - included the original dev(s) comment</span></span>
-<span class="registry__that have an item"><span class="multiple">func</span><span class="the_most"> isTrueEnd</span><span class="registries">():</span></span>
-<span class="registry__that have an item"><span class="registries">    ## TRUE END CONDITIONS:</span></span>
-<span class="registry__that have an item"><span class="registries">    ##Must have played the game before</span></span>
-<span class="registry__that have an item"><span class="registries">    ##get Shiho Clicker! high score,</span></span>
-<span class="registry__that have an item"><span class="registries">    ##helped Blue Cube and Grey in White Void,</span></span>
-<span class="registry__that have an item"><span class="registries">    ## helped Snowman in Snow Tundra,</span></span>
-<span class="registry__that have an item"><span class="registries">    ##helped Chesspiece in Chessboard,</span></span>
-<span class="registry__that have an item"><span class="registries">    ##pass Stairs trial</span></span>
-<span class="registry__that have an item"><span class="multiple">    return</span></span>
-<span class="registry__that have an item"><span class="the_blocks">    flags</span><span class="registries">[</span><span class="blocks">"isTimeLoop"</span><span class="registries">]</span><span class="for"> and</span></span>
-<span class="registry__that have an item"><span class="the_blocks">    flags</span><span class="registries">[</span><span class="blocks">"highScore"</span><span class="registries">]</span><span class="for"> and</span><span class="the_blocks"> </span></span>
-<span class="registry__that have an item"><span class="registries">    # mint_duck: completely skipped this</span></span>
-<span class="registry__that have an item"><span class="the_blocks">    flags</span><span class="registries">[</span><span class="blocks">"helpedBlueAndGrey"</span><span class="registries">]</span><span class="for"> and</span><span class="the_blocks"> </span></span>
-<span class="registry__that have an item"><span class="the_blocks">    flags</span><span class="registries">[</span><span class="blocks">"helpedSnowman"</span><span class="registries">]</span><span class="for"> and</span><span class="the_blocks"> </span></span>
-<span class="registry__that have an item"><span class="registries">    # mint_duck: completely skipped this</span></span>
-<span class="registry__that have an item"><span class="the_blocks">    flags</span><span class="registries">[</span><span class="blocks">"helpedChesspiece"</span><span class="registries">]</span><span class="for"> and</span><span class="the_blocks"> </span></span>
-<span class="registry__that have an item"><span class="for">    !</span><span class="the_blocks">flags</span><span class="registries">[</span><span class="blocks">"stairsFailed"</span><span class="registries">]</span></span>
-</pre><p>Conclusion: I have to play the game again.</p><p>Of course, I can patch that function to always return <code>true</code>, but that's boring, I'm gonna play the game again</p><h1>Some thoughts</h1><p>Godot is very powerful, but currently it's very easy to let random curios people to decompile the game code - since everything is plain text file - patch it whatever they want, then repackage it.</p><p>You would think this might be the greatest idea for modding, or might be the worst idea (<a href="https://github.com/trigram-mrp/fractureiser" target="_blank">Fractureiser</a> in Minecraft for example).</p><p>Honestly, I don't know, if you enjoy the game, it's a win.</p></section></main></div>
-      </body>
-    </html>
+<!doctype html><html lang=en><meta charset=utf-8><meta content="width=device-width" name=viewport><title>Duck's project index</title><link href=../assets/base.css rel=stylesheet><link href=../assets/orbital_precision_strike.css rel=stylesheet><meta content="Tracking which weird project duck is currently doing" name=description><meta content="this is duck" name=duck><style data-why="prevent flashbang when reload/open this">html{background-color:#11111b}</style><body><div class="e20 r12 i20 t17 o6 b2"><a class="t18 a5 i21 n7 s16 a6 d i22 f2" data-link-no-color=true href=./index.html><svg viewbox="0 0 16 16" color=currentColor fill=currentColor height=2rem style=overflow:visible width=2rem xmlns=http://www.w3.org/2000/svg><path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"></path></svg>Back to this project</a></div><div class="f3 e21 r13 g2 u2 i25 a8" id=root><header class="s11 f r4 o3 m2 w6 h5 e11 r5"><img class="f1 r8 o5 e12" src=./assets/banner.png><div class="i13 s12 n5 t12 o4 r6 w7"></div><div class="h6 e13 r7 e14 _1f3e42e4"><span class="i12 t11">Mihoshiho decompilation</span><p>A (soft) decompilation of the game: <a href=https://redtomatochicken.itch.io/mihoshiho target=_blank>Mihoshiho - It Will Be Okay!</a> on itch.io, because the last part of the game is almost impossible to pass thourgh</div></header><main class="o11 _1f3e42e4"><section class="h3 e7"><div class="r1 e8 i7 t6"><span class="i8 s9 n3 t7 B y s10 u1 b1">Some stuff</span><div class="t8 r2 a3 c1"></div></div><h1>Interesting stuff I found</h1><h2>Bullets random luck RNG</h2><p>The reason the final part I feel... inconsistent and making me confused to why I was alive 5 seconds before and then I respawned the moment I touched the missile is because...<pre class="e28 s21 d3 e29 v2 i26"><span class="e27 m4 u4 s20"><span class=c4># script/entity/Bullet.gd - included the original dev(s) comment</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>func</span><span class=e26> processInteraction</span><span class=c4>(</span><span class=u3>delta</span><span class=c4>):</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>    # ...</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>    else</span><span class=t20>:	</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>        if</span><span class=t20> isHit:</span></span>
+<span class="e27 m4 u4 s20"><span class=t20>            isHit </span><span class=b3>=</span><span class=s17> false</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>            return</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>    if</span><span class=e26> randi_range</span><span class=c4>(</span><span class=s18>1</span><span class=c4>,</span><span class=s18>60</span><span class=c4>)</span><span class=b3> &lt;=</span><span class=s18> 3</span><span class=t20>: </span><span class=c4># mint_duck: now I see why...</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>      # 3 frame invincibility window</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>      # is random though</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>      return</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>    if</span><span class=b3> !</span><span class=t20>gameManager</span><span class=b3>.</span><span class=t20>isInCutscene:</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>      # ... teleport you back to the last checkpoint ...</span></span>
+<span class="e27 m4 u4 s20"><span class=t20>    isHit </span><span class=b3>=</span><span class=s17> false</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>    return</span></span>
+<span class="e27 m4 u4 s20"><span class=t20>        </span></span>
+<span class="e27 m4 u4 s20"><span class=e26>    doMovement</span><span class=c4>(</span><span class=u3>delta</span><span class=c4>)</span></span>
+</pre><p>But we can patch it up by granting Miho literal god mode and brick the entire universe:<pre class="e28 s21 d3 e29 v2 i26"><span class="e27 m4 u4 s20"><span class=c4># script/entity/Bullet.gd</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>func</span><span class=e26> processInteraction</span><span class=c4>(</span><span class=u3>delta</span><span class=c4>):</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>    # ...</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>    else</span><span class=t20>:</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>    # if miho hits a bullet</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>    if</span><span class=t20> isHit:</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>      return</span><span class=c4> # tell the game "he's fine, don't do anything else"</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>    if</span><span class=e26> randi_range</span><span class=c4>(</span><span class=s18>1</span><span class=c4>,</span><span class=s18>60</span><span class=c4>)</span><span class=b3> &lt;=</span><span class=s18> 3</span><span class=t20>:</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>      # ... the rest of the function ...</span></span>
+</pre><p>And here we go, Miho have reached immortality :)</p><video controls><source src=./assets/patch_result.mp4 type=video/mp4></video><h2>Window size flickering bug</h2><p>I guess this is because the game instantly updates the window resolution on the setting menu when I slide through the options. <strong>Rapid flashing warning for sensitive people!!</strong></p><video controls><source src=./assets/setting_resolution_bug.mp4 type=video/mp4></video><p>I might have to look why the game is freaking out when changing resolution, gonna update if I found it.<h2>Second ending condition</h2><p>We can absolutely find it by... guessing, yes.<p>If you interact with this bed on 4th floor in the final act, the game simply tell you this: <img alt="final act" src=./assets/final_act.png><p>But <em>when</em> that dialog show to you?<p>This:<pre class="e28 s21 d3 e29 v2 i26"><span class="e27 m4 u4 s20"><span class=c4># script/textbox/TextboxCanvasLayer.gd - included the original dev(s) comment</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>func</span><span class=e26> _process</span><span class=c4>(</span><span class=u3>delta</span><span class=c4>):</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>  # ... omitted ...</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>    if</span><span class=t20> done:</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>        if</span><span class=b3> !</span><span class=t20>isTransitionOut </span><span class=b3>and</span><span class=t20> hideArm </span><span class=b3>and</span><span class=s19> Input</span><span class=t20>.</span><span class=e26>is_action_just_released</span><span class=c4>(</span><span class=y1>"Action_Confirm"</span><span class=c4>,</span><span class=s17>true</span><span class=c4>)</span><span class=t20>:</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>            # ...</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>            if</span><span class=t20> isYesnoquestion:</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>                #code to run if yes no question is enabled</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>                match</span><span class=t20> entityRef</span><span class=b3>.</span><span class=t20>confirmationType:</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>          # ... omitted ...</span></span>
+<span class="e27 m4 u4 s20"><span class=y1>          "mihoHospitalBed"</span><span class=t20>:</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>            if</span><span class=t20> gameManager</span><span class=b3>.</span><span class=t20>flags</span><span class=c4>[</span><span class=y1>"isTimeLoop"</span><span class=c4>]</span><span class=t20>: </span><span class=c4># <- flag< mint_duck: span this>
+<span class="e27 m4 u4 s20"><span class=e26>              print</span><span class=c4>(</span><span class=y1>"Showing hospital bed cutscene reveal"</span><span class=c4>)</span></span>
+<span class="e27 m4 u4 s20"><span class=t20>              gameManager.</span><span class=e26>populateMihoHospitalBedCutscene</span><span class=c4>()</span></span>
+<span class="e27 m4 u4 s20"><span class=t20>              gameManager.</span><span class=e26>startCutscene</span><span class=c4>(</span><span class=u3>gameManager</span><span class=b3>.</span><span class=u3>MihoHospitalBedCutscene</span><span class=c4>)</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>            else</span><span class=t20>:</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>              await</span><span class=t20> dialogFinished</span></span>
+<span class="e27 m4 u4 s20"><span class=e26>              trigger</span><span class=c4>(</span><span class=y1>"Miho"</span><span class=c4>,</span><span class=y1>"I'm too scared to look..."</span><span class=c4>)</span><span class=c4> # mint_duck: found 'em</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>          # ... omitted ...</span></span>
+<p>Searching <code>flags["isTimeLoop"]</code> eventually led us to:<pre class="e28 s21 d3 e29 v2 i26"><span class="e27 m4 u4 s20"><span class=c4># script/gameManager.gd - included the original dev(s) comment</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>func</span><span class=e26> isTrueEnd</span><span class=c4>():</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>    ## TRUE END CONDITIONS:</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>    ##Must have played the game before</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>    ##get Shiho Clicker! high score,</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>    ##helped Blue Cube and Grey in White Void,</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>    ## helped Snowman in Snow Tundra,</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>    ##helped Chesspiece in Chessboard,</span></span>
+<span class="e27 m4 u4 s20"><span class=c4>    ##pass Stairs trial</span></span>
+<span class="e27 m4 u4 s20"><span class=n10>    return</span></span>
+<span class="e27 m4 u4 s20"><span class=t20>    flags</span><span class=c4>[</span><span class=y1>"isTimeLoop"</span><span class=c4>]</span><span class=b3> and</span></span>
+<span class="e27 m4 u4 s20"><span class=t20>    flags</span><span class=c4>[</span><span class=y1>"highScore"</span><span class=c4>]</span><span class=b3> and</span><span class=t20> </span></span>
+<span class="e27 m4 u4 s20"><span class=c4>    # mint_duck: completely skipped this</span></span>
+<span class="e27 m4 u4 s20"><span class=t20>    flags</span><span class=c4>[</span><span class=y1>"helpedBlueAndGrey"</span><span class=c4>]</span><span class=b3> and</span><span class=t20> </span></span>
+<span class="e27 m4 u4 s20"><span class=t20>    flags</span><span class=c4>[</span><span class=y1>"helpedSnowman"</span><span class=c4>]</span><span class=b3> and</span><span class=t20> </span></span>
+<span class="e27 m4 u4 s20"><span class=c4>    # mint_duck: completely skipped this</span></span>
+<span class="e27 m4 u4 s20"><span class=t20>    flags</span><span class=c4>[</span><span class=y1>"helpedChesspiece"</span><span class=c4>]</span><span class=b3> and</span><span class=t20> </span></span>
+<span class="e27 m4 u4 s20"><span class=b3>    !</span><span class=t20>flags</span><span class=c4>[</span><span class=y1>"stairsFailed"</span><span class=c4>]</span></span>
+</pre><p>Conclusion: I have to play the game again.<p>Of course, I can patch that function to always return <code>true</code>, but that's boring, I'm gonna play the game again<h1>Some thoughts</h1><p>Godot is very powerful, but currently it's very easy to let random curios people to decompile the game code - since everything is plain text file - patch it whatever they want, then repackage it.<p>You would think this might be the greatest idea for modding, or might be the worst idea (<a href=https://github.com/trigram-mrp/fractureiser target=_blank>Fractureiser</a> in Minecraft for example).<p>Honestly, I don't know, if you enjoy the game, it's a win.</p>
+      
+    
   
