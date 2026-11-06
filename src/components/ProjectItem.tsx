@@ -39,6 +39,7 @@ const item__icon = css`
   width: 4.25rem;
   height: 4.25rem;
   border-radius: 6px;
+  object-fit: cover;
 `
 
 const item__titleWrap = css`
