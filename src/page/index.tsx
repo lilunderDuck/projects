@@ -6,7 +6,6 @@ import { GLOBAL_PROJECT_PAGE_INLINE_PADDING } from "../main"
 
 const page__root = css`
   user-select: none;
-  overflow-y: auto;
 `
 
 const page__mainContent = css`

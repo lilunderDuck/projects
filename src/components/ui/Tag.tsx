@@ -1,11 +1,13 @@
-import { css } from "../../core"
+import { createCSSVar, css } from "../../core"
+
+const TAG_BACKGROUND_COLOR_VAR = createCSSVar()
 
 const tag__root = css`
   user-select: none;
   padding-inline: 10px;
   padding-block: 2px;
   border-radius: 6px;
-  background-color: var(--tag-bg-color);
+  background-color: var(${TAG_BACKGROUND_COLOR_VAR});
   color: var(--crust);
   width: fit-content;
 `
@@ -18,7 +20,7 @@ interface ITagProps {
 export function Tag(props: ITagProps) {
   return (
     // @ts-ignore
-    <div class={tag__root} style={`--tag-bg-color:${props.bgColor}`}>
+    <div class={tag__root} style={`${TAG_BACKGROUND_COLOR_VAR}:${props.bgColor}`}>
       {props.children}
     </div>
   )

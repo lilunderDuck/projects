@@ -1,17 +1,21 @@
 import { compile, serialize, stringify, type Element as CSSElement } from "stylis"
 import { panic, writeFile } from "../../utils"
-import { createSingleWordSlidingRandomizer } from "./dumb_random"
+import { RANDOMIZER } from "./dumb_random"
 
 const GENERATED_CSS_FILE_NAME = "orbital_precision_strike.css" as const
 
 const cachedCssValues = new Map<string, string>()
-export function dumpCSS(toPath: string) {
+export function dumpCSS(toPath: string, initialCss: string) {
   let everything = ""
   for (const cssRule of cachedCssValues.values()) {
     everything += cssRule
   }
 
-  writeFile(`${toPath}/${GENERATED_CSS_FILE_NAME}`, everything)
+  writeFile(`${toPath}/${GENERATED_CSS_FILE_NAME}`, `${initialCss}${everything}`)
+}
+
+export function createCSSVar() {
+  return `--${RANDOMIZER.next()}` as const
 }
 
 const CSS_DEFAULT_HANDLER = cssAtomicHandler()
@@ -37,8 +41,11 @@ const CSS_DEFAULT_HANDLER = cssAtomicHandler()
  * @see `dumb_random.ts` for example randomizer function
  * @see {@link cssAtomicHandler()}
  */
-export function css(template: TemplateStringsArray): string {
-  const rawCss = template.join(' ')
+export function css(template: TemplateStringsArray, ...dynamicValues: (string | number)[]): string {
+  const rawCss = template.reduce((accumulator, currentString, index) => {
+    const dynamicValue = dynamicValues[index] !== undefined ? dynamicValues[index] : ''
+    return accumulator + currentString + dynamicValue
+  }, '')
   return CSS_DEFAULT_HANDLER(rawCss)
 }
 
@@ -105,16 +112,14 @@ export function css(template: TemplateStringsArray): string {
  * @see {@link simpleCSSBlocksParser()}
  * @returns 
  */
-function cssAtomicHandler(nameRandomizer = createSingleWordSlidingRandomizer()) {
-  const MAX_WORD_LENGTH = 1
-
+function cssAtomicHandler(nameRandomizer = RANDOMIZER.next) {
   return (rawCss: string) => {
     const { rootDeclarations, nestedBlocks } = simpleCSSBlocksParser(rawCss)
     const compiledClassnames: string[] = []
 
     for (const [prop, val] of Object.entries(rootDeclarations)) {
       // const cacheKey = `${prop}:${val}`
-      const thisClassname = nameRandomizer(MAX_WORD_LENGTH)
+      const thisClassname = nameRandomizer()
       const rule = `.${thisClassname} { ${prop}: ${val}; }` as const
       const compiled = serialize(compile(rule), stringify)
       
@@ -123,7 +128,7 @@ function cssAtomicHandler(nameRandomizer = createSingleWordSlidingRandomizer()) 
     }
 
     if (nestedBlocks.length > 0) {
-      const baseClass = nameRandomizer(MAX_WORD_LENGTH)
+      const baseClass = nameRandomizer()
       
       for (const block of nestedBlocks) {
         const nestedRule = `.${baseClass} { ${block.selector} { ${block.body} } }` as const

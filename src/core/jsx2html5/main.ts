@@ -22,8 +22,6 @@ declare global {
 export interface IRenderHtmlOption {
   title: string
   description?: string
-  /**Additional CSS (e.g global styles) to the page */
-  css?: string
   bodyClass?: string
   basePath?: string
 }
@@ -59,7 +57,6 @@ export function render(component: JSX.Element, to: string, withOptions?: IRender
         <meta name="description" content="${withOptions.description}">
         <meta name="duck" content="this is duck">
         ${NO_FLASHBANG_WORKAROUND}
-        <style data-inline>${`${withOptions.css ?? ""}`.trim()}</style>
       </head>
       <body${withOptions.bodyClass ? ` class="${withOptions.bodyClass}"` : ""}>
         <!-- You won't believe this is not using react -->

@@ -1,17 +1,18 @@
 import { css } from "../core"
 
+const CUBE_SIZE = 100 //px
+const CUBE_HALF_CUBE_SIZE = CUBE_SIZE / 2 //px
+const CUBE_REVERSE_HALF_CUBE_SIZE = -1 * (CUBE_SIZE / 2) //px
+const CUBE_TOP_FACE_COLOR = "#ffc75e"
+const CUBE_RIGHT_FACE_COLOR = "#eb4334"
+const CUBE_BOTTOM_FACE_COLOR = "#eb7134"
+const CUBE_LEFT_FACE_COLOR = "#34b4eb"
+const CUBE_FRONT_FACE_COLOR = "#ff78d0"
+const CUBE_BACK_FACE_COLOR = "#ff5e81"
+
 const cube__bound = css`
-  --cube-size: 100px;
-  --half-of-the-cube-size: calc(var(--cube-size) / 2);
-  --reverse-half-of-the-cube-size: calc(-1 * var(--cube-size) / 2);
-  --top-face-color: #ffc75e;
-  --right-face-color: #eb4334;
-  --bottom-face-color: #eb7134;
-  --left-face-color: #34b4eb;
-  --front-face-color: #ff78d0;
-  --back-face-color: #ff5e81;
-  width: var(--cube-size);
-  height: var(--cube-size);
+  width: ${CUBE_SIZE}px;
+  height: ${CUBE_SIZE}px;
 `
 
 const cube = css`
@@ -20,8 +21,8 @@ const cube = css`
   position: relative;
   top: 50%;
   left: 50%;
-  margin-left: var(--reverse-half-of-the-cube-size);
-  margin-top: var(--reverse-half-of-the-cube-size);
+  margin-left: ${CUBE_REVERSE_HALF_CUBE_SIZE}px;
+  margin-top: ${CUBE_REVERSE_HALF_CUBE_SIZE}px;
 `
 
 const cube__face = css`
@@ -30,47 +31,42 @@ const cube__face = css`
 
 const cube__top = css`
   transform: rotateX(90deg);
-  margin-top: var(--reverse-half-of-the-cube-size);
-  background-color: var(--top-face-color);
+  margin-top: ${CUBE_REVERSE_HALF_CUBE_SIZE}px;
+  background-color: ${CUBE_TOP_FACE_COLOR};
 `
 
 const cube__right = css`
   transform: rotateY(90deg);
-  margin-left: var(--half-of-the-cube-size);
-  background-color: var(--right-face-color);
+  margin-left: ${CUBE_HALF_CUBE_SIZE}px;
+  background-color: ${CUBE_RIGHT_FACE_COLOR};
 `
 
 const cube__bottom = css`
   transform: rotateX(-90deg);
-  margin-top: var(--half-of-the-cube-size);
-  background-color: var(--bottom-face-color);
+  margin-top: ${CUBE_HALF_CUBE_SIZE}px;
+  background-color: ${CUBE_BOTTOM_FACE_COLOR};
 `
 
 const cube__left = css`
   transform: rotateY(-90deg);
-  margin-left: var(--reverse-half-of-the-cube-size);
-  background-color: var(--left-face-color);
+  margin-left: ${CUBE_REVERSE_HALF_CUBE_SIZE}px;
+  background-color: ${CUBE_LEFT_FACE_COLOR};
 `
 
 const cube__front = css`
-  transform: translateZ(var(--half-of-the-cube-size));
-  background-color: var(--front-face-color);
+  transform: translateZ(${CUBE_HALF_CUBE_SIZE}px);
+  background-color: ${CUBE_FRONT_FACE_COLOR};
 `
 
 const cube__back = css`
-  transform: translateZ(var(--reverse-half-of-the-cube-size));
-  background-color: var(--back-face-color);
+  transform: translateZ(${CUBE_REVERSE_HALF_CUBE_SIZE}px);
+  background-color: ${CUBE_BACK_FACE_COLOR};
 `
 
-interface ISpinningCubeProps {
-  /**The size of this cube in pixels. Default to `100px` */
-  cubeSize$?: number
-}
-
-export function SpinningCube(props: ISpinningCubeProps) {
+export function SpinningCube() {
   return (
     <div 
-      class={`${cube__bound} cube__thisCube`}
+      class={cube__bound}
     >
       <div class={`${cube} ${cube__bound}`}>
         <div class={`${cube__face} ${cube__bound} ${cube__top}`} />

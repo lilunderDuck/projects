@@ -1,6 +1,6 @@
 import path from "node:path"
 // ...
-import { createWordSlidingRandomizer, dumpCSS, render } from "./core"
+import { dumpCSS, HASH_RANDOMIZER, RANDOMIZER, render } from "./core"
 import { CURRENT_BUILD_DATE } from "./data"
 // ...
 import HomePage, { HOME_PAGE_CLASSES } from "./page"
@@ -11,10 +11,9 @@ import { copyDir, dplLogger } from "./utils"
 import { scanForProjectCandidate } from "./projectDiscovery"
 import "./codeBlockBootstrap"
 
-const randomizer = createWordSlidingRandomizer()
-export const GLOBAL_PROJECT_PAGE_INLINE_PADDING = randomizer(8)
-export const HOME_PAGE_TITLE_HEADER = randomizer(8)
-export const HOME_PAGE_TITLE_WRAPPER_HEADER = randomizer(8)
+export const GLOBAL_PROJECT_PAGE_INLINE_PADDING = HASH_RANDOMIZER.next()
+export const HOME_PAGE_TITLE_HEADER = HASH_RANDOMIZER.next()
+export const HOME_PAGE_TITLE_WRAPPER_HEADER = HASH_RANDOMIZER.next()
 
 const GLOBAL_STYLE = `
   @keyframes dot_grid_move {
@@ -48,21 +47,22 @@ const GLOBAL_STYLE = `
     font-size: 3.5rem;
   }
 
-  @media screen and (max-width: 750px) {
+  @media screen and (max-width: 820px) {
     .${GLOBAL_PROJECT_PAGE_INLINE_PADDING} { padding-inline: 1rem; }
-    .${HOME_PAGE_TITLE_HEADER} {
-      font-size: 2.5rem;
-    }
-
     .${HOME_PAGE_TITLE_WRAPPER_HEADER} {
       padding-inline: 20px;
+    }
+  }
+
+  @media screen and (max-width: 750px) {
+    .${HOME_PAGE_TITLE_HEADER} {
+      font-size: 2.5rem;
     }
   }
 `
 
 const GLOBAL_PAGE_OPTIONS = { 
-  title: "Duck's project index", 
-  css: GLOBAL_STYLE
+  title: "Duck's project index"
 }
 
 const projectCanidate = await scanForProjectCandidate("D:/projects")
@@ -95,6 +95,6 @@ for (const stat of projectCanidate) {
 }
 
 dplLogger.info("Dumping all CSS...")
-dumpCSS("./docs/assets")
+dumpCSS("./docs/assets", GLOBAL_STYLE)
 
 dplLogger.info("Done :)")
