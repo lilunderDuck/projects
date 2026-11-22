@@ -61,7 +61,7 @@ export function ProjectItem(props: IProjectStat & { index: number }) {
         <div class={item__indexNumber}>
           {props.index}
         </div>
-        <img class={item__icon} draggable={false} src={`./${props.id}/assets/${props.icon}`} alt="">
+        <img loading="lazy" height={68} class={item__icon} draggable={false} src={`./${props.id}/assets/${props.icon}`} alt="">
           {/* ... */}
         </img>
       </div>
