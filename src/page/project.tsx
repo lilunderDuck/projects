@@ -1,4 +1,4 @@
-import { MarkdownText, scrollbar, scrollbar__invs, scrollbar__vertical, page__rootStyle, ProjectHeader, ProjectSection, ProjectStatTable, BackToHomeButton } from "../components"
+import { MarkdownText, scrollbar, scrollbar__invs, scrollbar__vertical, page__rootStyle, ProjectHeader, ProjectSection, ProjectStatTable, BackToHomeButton, Show } from "../components"
 import { css } from "../core"
 import type { IProjectStat } from "../data"
 import { GLOBAL_PROJECT_PAGE_INLINE_PADDING } from "../main"
@@ -21,11 +21,13 @@ export default function ProjectPage(props: IProjectStat) {
       <div id="root" class={`${page__rootStyle} ${scrollbar} ${scrollbar__vertical} ${scrollbar__invs}`}>
         <ProjectHeader {...props} />
         <main class={`${page__main} ${GLOBAL_PROJECT_PAGE_INLINE_PADDING}`}>
-          <ProjectSection name="Basically">
-            <MarkdownText>
-              {props.longDescription}
-            </MarkdownText>
-          </ProjectSection>
+          <Show when={props.description.length != 0}>
+            <ProjectSection name="Basically">
+              <MarkdownText>
+                {props.longDescription}
+              </MarkdownText>
+            </ProjectSection>
+          </Show>
           <ProjectSection name="Project stats" class={page__section}>
             <ProjectStatTable {...props} />
           </ProjectSection>
