@@ -1,4 +1,4 @@
-import { MarkdownText, Tag } from "../components"
+import { MarkdownText, Show, Tag } from "../components"
 import { css } from "../core"
 import { PROJECT_STATUS_REGISTRY, PROJECT_TYPE_COLOR_MAPPING, type IProjectStat } from "../data"
 
@@ -86,6 +86,11 @@ export function ProjectItem(props: IProjectStat & { index: number }) {
               Baguette ecosystem
             </Tag>
           )}
+          <Show when={props.id.startsWith("duck-project-index")}>
+            <Tag bgColor={'var(--pink)'}>
+              Duck's project index
+            </Tag>
+          </Show> 
         </div>
       </div>
     </li>
