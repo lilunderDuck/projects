@@ -1,6 +1,6 @@
 import fs from "node:fs"
 import { dplLogger, formatPath, getEverythingFrom, isFileOrDirExist, readFile, ShellExec } from "./utils"
-import { LICENSE_REGISTRY, type IProjectMetadata, type IProjectStat } from "./data"
+import { LICENSE_REGISTRY, type ProjectMetadataSchema, type IProjectStat, ProjectMetadata } from "./data"
 
 export async function scanForProjectCandidate(basePath: string) {
   dplLogger.info("duck's project loader is scanning for duck project candidate at", formatPath(basePath)) // not a (neo)forge reference :)
@@ -65,7 +65,17 @@ function readProjectMetadata(dotDuckFolderPath: string) {
     return null
   }
 
-  return readFile(PROJECT_METADATA_PATH).asJSON<IProjectMetadata>()
+  try {
+    const metadata = readFile(PROJECT_METADATA_PATH).asJSON<ProjectMetadataSchema>()
+    if (ProjectMetadata.safeParse(metadata).error) {
+      dplLogger.warn("invalid metadata.json on .duck folder at", PROJECT_METADATA_PATH, ". Skipping...")
+      return null
+    }
+    return metadata
+  } catch(error) {
+    dplLogger.warn("could not parse metadata.json on .duck folder at", PROJECT_METADATA_PATH, ". Skipping...")
+    return null
+  }
 }
 
 function getProjectLongDescription(dotDuckFolderPath: string) {
@@ -78,7 +88,7 @@ function getProjectLongDescription(dotDuckFolderPath: string) {
   }
 }
 
-function appendLicenceUrl(dataRef: IProjectStat, metadata: IProjectMetadata) {
+function appendLicenceUrl(dataRef: IProjectStat, metadata: ProjectMetadataSchema) {
   dataRef.licence = metadata.licence ? metadata.licence.map(it => ({
     ...it,
     // @ts-ignore

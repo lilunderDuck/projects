@@ -1,21 +1,26 @@
+import * as z from "zod"
+import { nonEmptyString, unionOf } from "../utils"
+
 type LicenceNameNone = null
 
-export interface IProjectMetadata {
-  type: "private" | "public"
-  status: "active" | "paused" | "completed" | "stopped"
-  title: string
-  id: string
-  repoUrl?: string
-  description: string
-  licence?: {
-    name: string | LicenceNameNone
-    why?: string
-  }[]
-  icon: string
-  banner?: string
-}
+export const ProjectMetadata = z.object({
+  type: unionOf("private", "public"),
+  status: unionOf("active", "paused", "completed", "stopped"),
+  title: nonEmptyString(),
+  id: nonEmptyString(),
+  repoUrl: nonEmptyString().optional(),
+  description: nonEmptyString(),
+  icon: nonEmptyString(),
+  banner: nonEmptyString().optional(),
+  licence: z.array(z.object({
+    name: nonEmptyString().or(z.literal(null)),
+    why: nonEmptyString().optional()
+  }))
+}, "Project metadata must be an object")
 
-export interface IProjectStat extends Omit<IProjectMetadata, "licence"> {
+export type ProjectMetadataSchema = z.infer<typeof ProjectMetadata>
+
+export interface IProjectStat extends Omit<ProjectMetadataSchema, "licence"> {
   longDescription: string
   totalCommits: number
   licence?: {
