@@ -51,8 +51,8 @@ export interface IProjectStat extends IBaseProjectStat, ProjectMetadataSchema {
 }
 
 export interface IProjectGroupStat extends IBaseProjectStat, ProjectGroupMetadataSchema {
-  // children: IProjectGroupStat[]
   projectType: ProjectType.GROUP
+  projects: IProjectStat[]
 }
 
 export type AnyProjectStat = 

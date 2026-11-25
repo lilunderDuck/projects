@@ -66,28 +66,23 @@ const GLOBAL_PAGE_OPTIONS = {
 
 const loader = new ProjectLoader("D:/projects")
 loader.scanForCandidate()
-await loader.attachData()
-
-loader.render(async(metadata, attachData) => {
-  if (!attachData) return
-
+loader.render(async(metadata) => {
   if (metadata.type === "group") {
     return
   } // a little hacked workaround
 
   const outputFolder = `./docs/${metadata.id}`
-  if (attachData.assetsPath) {
-    copyDir(attachData.assetsPath, `${outputFolder}/assets`)
+  if (metadata.assetsPath) {
+    copyDir(metadata.assetsPath, `${outputFolder}/assets`)
   }
   
   const pageOptions = { ...GLOBAL_PAGE_OPTIONS, basePath: ".." }
-  const stat = { ...metadata, ...attachData }
-  await render(<ProjectPage {...stat} />, `./docs/${metadata.id}/index.html`, pageOptions)
+  await render(<ProjectPage {...metadata} />, `./docs/${metadata.id}/index.html`, pageOptions)
   
-  for (const subPage of attachData.pages) {
+  for (const subPage of metadata.pages) {
     const PAGE_FILE_NAME = path.basename(subPage.path).replace(".md", ".html")
     await render(
-      <ProjectSubpage page={subPage} metadata={stat} />, 
+      <ProjectSubpage page={subPage} metadata={metadata} />, 
       `./docs/${metadata.id}/${PAGE_FILE_NAME}`, 
       pageOptions
     )
@@ -97,10 +92,9 @@ loader.render(async(metadata, attachData) => {
 await render((
   <HomePage 
     buildDate={CURRENT_BUILD_DATE} 
-    projectList={loader.candidate().values().toArray()} 
+    projectList={loader.candidate()}
   />
 ), "./docs/index.html", { ...GLOBAL_PAGE_OPTIONS, bodyClass: HOME_PAGE_CLASSES })
 
 dumpCSS("./docs/assets", GLOBAL_STYLE)
-
 minifyCSSFromFile("./src/assets/base.css", "./docs/assets/base.css")

@@ -1,5 +1,5 @@
 import { createRegistry } from "../utils"
-import type { IProjectStat } from "./data"
+import type { AnyProject, IProjectStat } from "./data"
 
 type ProjectStatusRegistry = Record<IProjectStat["status"], {
   color: string
@@ -25,7 +25,7 @@ export const PROJECT_STATUS_REGISTRY = createRegistry<ProjectStatusRegistry>({
   }
 })
 
-export const PROJECT_TYPE_COLOR_MAPPING = createRegistry<Record<IProjectStat["type"], string>>({
+export const PROJECT_TYPE_COLOR_MAPPING = createRegistry<Record<AnyProject["type"], string>>({
   private: "var(--mauve)",
   public: "var(--flamingo)",
   group: "var(--lavender)"
