@@ -1,13 +1,13 @@
 import path from "node:path"
 // ...
 import { dumpCSS, HASH_RANDOMIZER, minifyCSSFromFile, render, type IRenderHtmlOption } from "./core"
-import { CURRENT_BUILD_DATE, ProjectType } from "./api"
+import { CURRENT_BUILD_DATE, ProjectType, type AnyProjectStat } from "./api"
 // ...
 import HomePage, { HOME_PAGE_CLASSES } from "./page"
 import ProjectPage from "./page/project"
 import ProjectSubpage from "./page/project-subpage"
 // ...
-import { copyDir, formatPath } from "./utils"
+import { copyDir, ensureDirExist, formatPath } from "./utils"
 import "./codeBlockBootstrap"
 import { LOGGER, ProjectLoader } from "./project-discovery"
 
@@ -62,25 +62,42 @@ const GLOBAL_STYLE = `
 
 const loader = new ProjectLoader("D:/projects")
 await loader.scanForCandidate()
-await loader.render(async(metadata) => {
-  const outputFolder = `./docs/${metadata.id}`
+
+const renderPage = async(metadata: AnyProjectStat, baseGroupId = '') => {
+  const outputFolder = `./docs${baseGroupId}/${metadata.id}`
+  console.log('id', metadata.id, "parent of", baseGroupId === "" ? "<root>" : baseGroupId, outputFolder)
+
   if (metadata.assetsPath) {
     LOGGER.info("Copy assets from", formatPath(metadata.assetsPath))
     copyDir(metadata.assetsPath, `${outputFolder}/assets`)
   }
   
   const PAGE_OPTIONS = { basePath: ".." } as IRenderHtmlOption
+  if (baseGroupId !== "") {
+    PAGE_OPTIONS.basePath = "../.."
+  }
+
   for (const subPage of metadata.pages) {
     const PAGE_FILE_NAME = path.basename(subPage.path).replace(".md", ".html")
     await render(
       <ProjectSubpage page={subPage} metadata={metadata} />, 
-      `./docs/${metadata.id}/${PAGE_FILE_NAME}`, 
+      `${outputFolder}/${PAGE_FILE_NAME}`, 
       PAGE_OPTIONS
     )
   }
+
+  if (metadata.projectType === ProjectType.GROUP) {
+    for (const subProject of metadata.projects) {
+      await renderPage(subProject, `/${metadata.id}`)
+    }
+  }
   
-  await render(<ProjectPage {...metadata} />, `./docs/${metadata.id}/index.html`, PAGE_OPTIONS)
-})
+  await render(<ProjectPage {...metadata} />, `${outputFolder}/index.html`, PAGE_OPTIONS)
+}
+
+for (const metadata of loader.CANDIDATE) {
+  await renderPage(metadata)
+}
 
 await render((
   <HomePage 
