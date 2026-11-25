@@ -14,6 +14,14 @@ const page__section = css`
   }
 `
 
+const page__subProjectList = css`
+  padding-left: 0;
+  
+  & * {
+    font-size: 1.52rem !important;
+  }
+`
+
 export default function ProjectPage(props: AnyProjectStat) {
   return (
     <>
@@ -35,11 +43,13 @@ export default function ProjectPage(props: AnyProjectStat) {
           </Show>
           <Show when={props.projectType === ProjectType.GROUP}>
             <ProjectSection name="This group consist of..." class={page__section}>
-              <For each={(props as IProjectGroupStat).projects}>
-                {(it, index) => (
-                  <ProjectItem {...it} index={index + 1} />
-                )}
-              </For>
+              <ul class={page__subProjectList}>
+                <For each={(props as IProjectGroupStat).projects}>
+                  {(it, index) => (
+                    <ProjectItem {...it} index={index + 1} />
+                  )}
+                </For>
+              </ul>
             </ProjectSection>
           </Show>
         </main>
