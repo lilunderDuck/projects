@@ -50,9 +50,17 @@ export default function HomePage(props: { buildDate: string, projectList: AnyPro
           <For each={props.projectList}>
             {(it, index) => (
               <Show when={it.type === "group"} fallback={
-                <ProjectItem {...it} index={index + 1} />
+                <ProjectItem 
+                  {...it} 
+                  icon={it.icon ? `./${it.id}/assets/${it.icon}` : ""} 
+                  index={index + 1} 
+                />
               }>
-                <ProjectGroupItem {...it} index={index + 1} />
+                <ProjectGroupItem 
+                  {...it} 
+                  icon={it.icon} 
+                  index={index + 1} 
+                />
               </Show>
             )}
           </For>

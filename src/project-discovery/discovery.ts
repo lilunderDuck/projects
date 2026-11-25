@@ -107,14 +107,14 @@ export class ProjectLoader {
       data.icon = `assets/${this.currentProjectGroup.icon}`
       LOGGER.info("|  Attached icon from parent ->", data.icon)
     } else {
-      data.icon = `${metadataRef.id}/assets/${metadataRef.icon}`
+      data.icon = metadataRef.icon
     }
     
     if (data.banner === "[USE_PARENT_ICON]" && this.currentProjectGroup?.banner) {
       data.banner = `assets/${this.currentProjectGroup.banner}`
       LOGGER.info("|  Attached banner from parent ->", data.banner)
     } else {
-      data.banner = metadataRef.banner ? `${metadataRef.id}/assets/${metadataRef.banner}` : undefined
+      data.banner = metadataRef.banner
     }
 
     return data
