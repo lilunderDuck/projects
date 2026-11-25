@@ -1,4 +1,4 @@
-import { getEverythingFrom, readFile } from "../utils";
+import { formatPath, getEverythingFrom, readFile } from "../utils";
 import { LOGGER } from "./discovery";
 
 export function parseOtherMarkdownPage(dotDuckFolderPath: string) {
@@ -19,7 +19,7 @@ export function getProjectLongDescription(dotDuckFolderPath: string) {
   try {
     return readFile(PROJECT_LONG_DESCRIPTION_PATH).asText()
   } catch(error) {
-    LOGGER.info("Could not get the project long description from:", PROJECT_LONG_DESCRIPTION_PATH)
+    LOGGER.warn("Could not get the project long description from:", formatPath(PROJECT_LONG_DESCRIPTION_PATH), ". Falling back to empty string -> ''.")
     return ''
   }
 }

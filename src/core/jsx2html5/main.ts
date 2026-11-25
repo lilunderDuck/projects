@@ -28,7 +28,7 @@ export interface IRenderHtmlOption {
   basePath?: string
 }
 
-export async function render(component: JSX.Element, to: string, withOptions?: IRenderHtmlOption) {
+export async function render(component: JSX.Element, to: string, withOptions?: Partial<IRenderHtmlOption>) {
   withOptions = {
     description: "Tracking which weird project duck is currently doing",
     title: "Duck's project index",

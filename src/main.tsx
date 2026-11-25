@@ -1,7 +1,7 @@
 import path from "node:path"
 // ...
-import { dumpCSS, HASH_RANDOMIZER, minifyCSSFromFile, render } from "./core"
-import { CURRENT_BUILD_DATE } from "./api"
+import { dumpCSS, HASH_RANDOMIZER, minifyCSSFromFile, render, type IRenderHtmlOption } from "./core"
+import { CURRENT_BUILD_DATE, ProjectType } from "./api"
 // ...
 import HomePage, { HOME_PAGE_CLASSES } from "./page"
 import ProjectPage from "./page/project"
@@ -60,31 +60,27 @@ const GLOBAL_STYLE = `
   }
 `
 
-const GLOBAL_PAGE_OPTIONS = { 
-  title: "Duck's project index"
-}
-
 const loader = new ProjectLoader("D:/projects")
-loader.scanForCandidate()
-loader.render(async(metadata) => {
-  if (metadata.type === "group") {
-    return
-  } // a little hacked workaround
-
+await loader.scanForCandidate()
+await loader.render(async(metadata) => {
   const outputFolder = `./docs/${metadata.id}`
   if (metadata.assetsPath) {
     copyDir(metadata.assetsPath, `${outputFolder}/assets`)
   }
+
+  if (metadata.projectType === ProjectType.GROUP) {
+    return
+  } // a little hacked workaround
   
-  const pageOptions = { ...GLOBAL_PAGE_OPTIONS, basePath: ".." }
-  await render(<ProjectPage {...metadata} />, `./docs/${metadata.id}/index.html`, pageOptions)
+  const PAGE_OPTIONS = { basePath: ".." } as IRenderHtmlOption
+  await render(<ProjectPage {...metadata} />, `./docs/${metadata.id}/index.html`, PAGE_OPTIONS)
   
   for (const subPage of metadata.pages) {
     const PAGE_FILE_NAME = path.basename(subPage.path).replace(".md", ".html")
     await render(
       <ProjectSubpage page={subPage} metadata={metadata} />, 
       `./docs/${metadata.id}/${PAGE_FILE_NAME}`, 
-      pageOptions
+      PAGE_OPTIONS
     )
   }
 })
@@ -92,9 +88,9 @@ loader.render(async(metadata) => {
 await render((
   <HomePage 
     buildDate={CURRENT_BUILD_DATE} 
-    projectList={loader.candidate()}
+    projectList={loader.CANDIDATE}
   />
-), "./docs/index.html", { ...GLOBAL_PAGE_OPTIONS, bodyClass: HOME_PAGE_CLASSES })
+), "./docs/index.html", { bodyClass: HOME_PAGE_CLASSES })
 
 dumpCSS("./docs/assets", GLOBAL_STYLE)
 minifyCSSFromFile("./src/assets/base.css", "./docs/assets/base.css")

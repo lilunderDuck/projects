@@ -7,15 +7,16 @@ import { getTotalCommits } from "./repoUtils"
 export const LOGGER = new NotLog4j("dpl") // duck's project loader, short-handed
 
 export class ProjectLoader {
-  CANDIDATE: AnyProjectStat[] = []
+  public readonly CANDIDATE: AnyProjectStat[] = []
   readonly ATTACHED_DATA = new Map<string, AnyProjectStat>()
   constructor(protected readonly TARGET_PATH: string) {}
   
   public async scanForCandidate() {
+    // @ts-ignore - we don't talk about why there's a ts-ignore here...
     this.CANDIDATE = await this.scanForProjectCandidate(this.TARGET_PATH)
   }
 
-  protected async scanForProjectCandidate(targetPath: string) {
+  protected async scanForProjectCandidate(targetPath: string, baseFolderName = "") {
     const allProjectsFolder = fs.readdirSync(targetPath)
 
     console.log()
@@ -25,24 +26,26 @@ export class ProjectLoader {
 
     for (const projectFolderName of allProjectsFolder) {
       if (projectFolderName === ".duck") continue
-      if (!this.existDuckFolderIn(projectFolderName)) continue
+      if (!this.existDuckFolderIn(baseFolderName, projectFolderName)) continue
 
-      const metadata = this.parseMetadata(projectFolderName)
+      const metadata = this.parseMetadata(projectFolderName, baseFolderName)
       if (!metadata) continue
 
+      LOGGER.warn("Found project candidate", formatPath(projectFolderName))
+
       metadata.__folderName = projectFolderName
-      const attachedData = await this.attachData(metadata)
+      const attachedData = await this.attachData(metadata, baseFolderName)
 
       candidate.push(attachedData)
-      LOGGER.info("registered:", formatPath(projectFolderName))
+      LOGGER.info("registered:", formatPath(projectFolderName), "project type=", attachedData.projectType)
     }
     
     LOGGER.info("found", candidate.length, "candidate(s)")
     return candidate
   }
 
-  protected parseMetadata(projectFolderName: string) {
-    const metadata = readFile(`${this.getDotDuckPath(projectFolderName)}/metadata.json`)
+  protected parseMetadata(projectFolderName: string, baseFolderName: string) {
+    const metadata = readFile(`${this.getDotDuckPath(projectFolderName, baseFolderName)}/metadata.json`)
       .asJSON<AnyProject & { __folderName: string }>()
     // ...
 
@@ -57,10 +60,10 @@ export class ProjectLoader {
     return metadata
   }
 
-  protected async attachData(metadataRef: AnyProject & { __folderName: string }) {
+  protected async attachData(metadataRef: AnyProject & { __folderName: string }, baseFolderName: string) {
     LOGGER.info("Attaching additional data for found project candidate")
-    const currentProjectPath = this.getProjectPath(metadataRef.__folderName)
-    const dotDuckPath = this.getDotDuckPath(metadataRef.__folderName)
+    const currentProjectPath = this.getProjectPath(metadataRef.__folderName, baseFolderName)
+    const dotDuckPath = this.getDotDuckPath(metadataRef.__folderName, baseFolderName)
 
     let assetsPath: string | null = null
     if (isFileOrDirExist(`${dotDuckPath}/assets`)) {
@@ -78,7 +81,7 @@ export class ProjectLoader {
       ...baseData,
       pages: parseOtherMarkdownPage(dotDuckPath),
       totalCommits: await getTotalCommits(currentProjectPath),
-      projects: await this.scanForProjectCandidate(currentProjectPath) as IProjectStat[]
+      projects: await this.scanForProjectCandidate(currentProjectPath, metadataRef.__folderName) as IProjectStat[]
     } as IProjectGroupStat
     
     return {
@@ -92,15 +95,15 @@ export class ProjectLoader {
     } as IProjectStat
   }
 
-  public render(page: (metadata: AnyProjectStat) => void) {
-    for (const metadataRef of this.CANDIDATE) {
-      page(metadataRef)
-    }
+  public async render(page: (metadata: AnyProjectStat) => Promise<void>) {
+    LOGGER.info("Begin rendering everything...")
+    await Promise.all(this.CANDIDATE.map(it => page(it)))
   }
 
-  protected existDuckFolderIn(projectFolderName: string) {
-    const PROJECT_BASE_PATH = this.getProjectPath(projectFolderName)
-    const DOT_DUCK_FOLDER = this.getDotDuckPath(projectFolderName)
+  protected existDuckFolderIn(baseFolderName: string, projectFolderName: string) {
+    const folderPath = baseFolderName === "" ? projectFolderName : `${baseFolderName}/${projectFolderName}`
+    const PROJECT_BASE_PATH = this.getProjectPath(folderPath)
+    const DOT_DUCK_FOLDER = this.getDotDuckPath(folderPath)
     if (!isFileOrDirExist(DOT_DUCK_FOLDER)) {
       LOGGER.warn(".duck metadata folder does not exist at", formatPath(PROJECT_BASE_PATH), ". Skipping...")
       return false
@@ -115,15 +118,13 @@ export class ProjectLoader {
     return true
   }
 
-  public candidate() {
-    return this.CANDIDATE
+  protected getProjectPath<const T extends string>(folderName: T, baseFolderName = "") {
+    const folderPath = baseFolderName === "" ? folderName : `${baseFolderName}/${folderName}`
+    return `${this.TARGET_PATH}/${folderPath}` as const
   }
-
-  protected getProjectPath(folderName: string) {
-    return `${this.TARGET_PATH}/${folderName}`
-  }
-
-  protected getDotDuckPath(folderName: string) {
-    return `${this.getProjectPath(folderName)}/.duck`
+  
+  protected getDotDuckPath<const T extends string>(folderName: T, baseFolderName = "") {
+    const folderPath = baseFolderName === "" ? folderName : `${baseFolderName}/${folderName}`
+    return `${this.getProjectPath(folderPath)}/.duck` as const
   }
 }
