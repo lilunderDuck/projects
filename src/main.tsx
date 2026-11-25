@@ -71,6 +71,10 @@ await loader.attachData()
 loader.render(async(metadata, attachData) => {
   if (!attachData) return
 
+  if (metadata.type === "group") {
+    return
+  } // a little hacked workaround
+
   const outputFolder = `./docs/${metadata.id}`
   if (attachData.assetsPath) {
     copyDir(attachData.assetsPath, `${outputFolder}/assets`)

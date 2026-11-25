@@ -1,6 +1,6 @@
 import fs from "node:fs"
 import { formatPath, isFileOrDirExist, NotLog4j, readFile } from "../utils"
-import { ProjectGroupMetadata, ProjectMetadata, ProjectType, type AnyProject, type AnyProjectStat, type IProjectStat } from "../api"
+import { ProjectGroupMetadata, ProjectMetadata, ProjectType, type AnyProject, type AnyProjectStat, type IBaseProjectStat, type IProjectGroupStat, type IProjectStat } from "../api"
 import { getProjectLongDescription, parseOtherMarkdownPage } from "./markdownPages"
 import { getTotalCommits } from "./repoUtils"
 
@@ -56,7 +56,18 @@ export class ProjectLoader {
         assetsPath = `${this.getDotDuckPath(projectMetadata.folderName)}/assets`
       }
 
+      const baseData: IBaseProjectStat = {
+        assetsPath,
+        projectType: projectMetadata.type === "group" ? ProjectType.GROUP : ProjectType.PROJECT,
+        longDescription: getProjectLongDescription(this.getDotDuckPath(projectMetadata.folderName))
+      }
+
       if (projectMetadata.type === "group") {
+        this.ATTACHED_DATA.set(projectId, {
+          ...baseData,
+          pages: parseOtherMarkdownPage(this.getDotDuckPath(projectMetadata.folderName)),
+          totalCommits: await getTotalCommits(this.getProjectPath(projectMetadata.folderName)),
+        } as IProjectGroupStat)
         continue
       }
 

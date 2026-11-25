@@ -27,5 +27,6 @@ export const PROJECT_STATUS_REGISTRY = createRegistry<ProjectStatusRegistry>({
 
 export const PROJECT_TYPE_COLOR_MAPPING = createRegistry<Record<IProjectStat["type"], string>>({
   private: "var(--mauve)",
-  public: "var(--flamingo)"
+  public: "var(--flamingo)",
+  group: "var(--lavender)"
 })

@@ -38,19 +38,21 @@ export const enum ProjectType {
   GROUP
 }
 
-export interface IBaseProjectStat<T extends ProjectType> {
+export interface IBaseProjectStat {
   assetsPath: string | null
   longDescription: string
-  projectType: T
+  projectType: ProjectType
 }
 
-export interface IProjectStat extends IBaseProjectStat<ProjectType.PROJECT> {
+export interface IProjectStat extends IBaseProjectStat {
   totalCommits: number
   pages: { path: string, content: string }[]
+  projectType: ProjectType.PROJECT
 }
 
-export interface IProjectGroupStat extends IBaseProjectStat<ProjectType.GROUP> {
-  children: IProjectGroupStat[]
+export interface IProjectGroupStat extends IBaseProjectStat {
+  // children: IProjectGroupStat[]
+  projectType: ProjectType.GROUP
 }
 
 export type AnyProjectStat = 

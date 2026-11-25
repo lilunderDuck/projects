@@ -3,6 +3,7 @@ import { HomeHeader, ProjectItem } from "../components"
 import { css } from "../core"
 import type { AnyProject, IProjectStat } from "../api"
 import { GLOBAL_PROJECT_PAGE_INLINE_PADDING } from "../main"
+import { ProjectGroupItem } from "../components/ProjectGroupItem"
 
 const page__root = css`
   user-select: none;
@@ -50,7 +51,9 @@ export default function HomePage(props: { buildDate: string, projectList: AnyPro
             {(it, index) => (
               <Show when={it.type === "group"} fallback={
                 <ProjectItem {...it} index={index + 1} />
-              }></Show>
+              }>
+                <ProjectGroupItem {...it} index={index + 1} />
+              </Show>
             )}
           </For>
         </ul>
