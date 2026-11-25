@@ -7,7 +7,7 @@ import { getTotalCommits } from "./repoUtils"
 export const LOGGER = new NotLog4j("dpl") // duck's project loader, short-handed
 
 export class ProjectLoader {
-  readonly CANDIDATE = new Map<string, AnyProject & { folderName: string }>()
+  readonly CANDIDATE = new Map<string, AnyProjectStat>()
   readonly ATTACHED_DATA = new Map<string, AnyProjectStat>()
   constructor(protected readonly TARGET_PATH: string) {}
   
@@ -15,7 +15,7 @@ export class ProjectLoader {
     this.scanForProjectCandidate(this.TARGET_PATH)
   }
 
-  protected scanForProjectCandidate(targetPath: string) {
+  protected async scanForProjectCandidate(targetPath: string) {
     const allProjectsFolder = fs.readdirSync(targetPath)
 
     console.log()
@@ -26,13 +26,14 @@ export class ProjectLoader {
       if (!this.existDuckFolderIn(projectFolderName)) continue
 
       const metadata = readFile(`${this.getDotDuckPath(projectFolderName)}/metadata.json`)
-        .asJSON<AnyProject & { folderName: string }>()
+        .asJSON<AnyProject & { __folderName: string }>()
       // ...
 
       const isGroupProject = metadata.type === "group"
       const schema = isGroupProject ? ProjectGroupMetadata : ProjectMetadata
       const containsError = schema.safeParse(metadata).error
       if (containsError) {
+        // TODO: print out parsing error
         continue
       }
 
@@ -40,50 +41,48 @@ export class ProjectLoader {
         this.scanForProjectCandidate(this.getProjectPath(projectFolderName))
       }
 
-      metadata.folderName = projectFolderName
-      this.CANDIDATE.set(metadata.id, metadata)
+      metadata.__folderName = projectFolderName
+      const attachedData = await this.attachData(metadata)
+
+      this.CANDIDATE.set(metadata.id, attachedData)
       LOGGER.info("registered:", formatPath(projectFolderName))
     }
-
-    // LOGGER.info("finish searching for all project candidate, found", this.CANDIDATE., "candidate(s)")
   }
 
-  public async attachData() {
+  protected async attachData(metadataRef: AnyProject & { __folderName: string }) {
     LOGGER.info("Attaching additional data for found project candidate")
-    for (const [projectId, projectMetadata] of this.CANDIDATE) {
-      let assetsPath: string | null = null
-      if (isFileOrDirExist(`${this.getDotDuckPath(projectMetadata.folderName)}/assets`)) {
-        assetsPath = `${this.getDotDuckPath(projectMetadata.folderName)}/assets`
-      }
-
-      const baseData: IBaseProjectStat = {
-        assetsPath,
-        projectType: projectMetadata.type === "group" ? ProjectType.GROUP : ProjectType.PROJECT,
-        longDescription: getProjectLongDescription(this.getDotDuckPath(projectMetadata.folderName))
-      }
-
-      if (projectMetadata.type === "group") {
-        this.ATTACHED_DATA.set(projectId, {
-          ...baseData,
-          pages: parseOtherMarkdownPage(this.getDotDuckPath(projectMetadata.folderName)),
-          totalCommits: await getTotalCommits(this.getProjectPath(projectMetadata.folderName)),
-        } as IProjectGroupStat)
-        continue
-      }
-
-      this.ATTACHED_DATA.set(projectId, {
-        pages: parseOtherMarkdownPage(this.getDotDuckPath(projectMetadata.folderName)),
-        totalCommits: await getTotalCommits(this.getProjectPath(projectMetadata.folderName)),
-        assetsPath,
-        projectType: ProjectType.PROJECT,
-        longDescription: getProjectLongDescription(this.getDotDuckPath(projectMetadata.folderName))
-      } as IProjectStat)
+    let assetsPath: string | null = null
+    if (isFileOrDirExist(`${this.getDotDuckPath(metadataRef.__folderName)}/assets`)) {
+      assetsPath = `${this.getDotDuckPath(metadataRef.__folderName)}/assets`
     }
+
+    const baseData = {
+      assetsPath,
+      projectType: metadataRef.type === "group" ? ProjectType.GROUP : ProjectType.PROJECT,
+      longDescription: getProjectLongDescription(this.getDotDuckPath(metadataRef.__folderName))
+    } as IBaseProjectStat
+
+    if (metadataRef.type === "group") return {
+      ...metadataRef,
+      ...baseData,
+      pages: parseOtherMarkdownPage(this.getDotDuckPath(metadataRef.__folderName)),
+      totalCommits: await getTotalCommits(this.getProjectPath(metadataRef.__folderName)),
+    } as IProjectGroupStat
+    
+    return {
+      ...metadataRef,
+      ...baseData,
+      pages: parseOtherMarkdownPage(this.getDotDuckPath(metadataRef.__folderName)),
+      totalCommits: await getTotalCommits(this.getProjectPath(metadataRef.__folderName)),
+      assetsPath,
+      projectType: ProjectType.PROJECT,
+      longDescription: getProjectLongDescription(this.getDotDuckPath(metadataRef.__folderName))
+    } as IProjectStat
   }
 
   public render(page: (metadata: AnyProject, attachedData: any) => void) {
-    for (const [projectId, projectMetadata] of this.CANDIDATE) {
-      page(projectMetadata, this.ATTACHED_DATA.get(projectId))
+    for (const [projectId, metadataRef] of this.CANDIDATE) {
+      page(metadataRef, this.ATTACHED_DATA.get(projectId))
     }
   }
 

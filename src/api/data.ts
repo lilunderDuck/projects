@@ -44,13 +44,13 @@ export interface IBaseProjectStat {
   projectType: ProjectType
 }
 
-export interface IProjectStat extends IBaseProjectStat {
+export interface IProjectStat extends IBaseProjectStat, ProjectMetadataSchema {
   totalCommits: number
   pages: { path: string, content: string }[]
   projectType: ProjectType.PROJECT
 }
 
-export interface IProjectGroupStat extends IBaseProjectStat {
+export interface IProjectGroupStat extends IBaseProjectStat, ProjectGroupMetadataSchema {
   // children: IProjectGroupStat[]
   projectType: ProjectType.GROUP
 }
