@@ -24,7 +24,7 @@ export class ShellExec<T extends any> {
 
   public async executeDangerously(): Promise<T> {
     const command = this.command.join(' ')
-    console.log("running command:", command)
+    // console.log("running command:", command)
     if (command.includes('rm -rf /')) {
       throw panic("fatal: your command contains 'rm -rf /'!!!")
     }

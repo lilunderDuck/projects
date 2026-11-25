@@ -1,57 +1,48 @@
 import fs from "node:fs"
-import { dplLogger, formatPath, isFileOrDirExist, NotLog4j } from "../utils"
-import type { IProjectStat } from "../api"
-import { readProjectMetadata } from "./metadata"
-import { getProjectLongDescription, parseOtherMarkdownPage } from "./markdownPages"
-import { getTotalCommits } from "./repoUtils"
-import { appendLicenceUrl } from "./licenceLookUp"
+import { formatPath, isFileOrDirExist, NotLog4j, readFile } from "../utils"
+import { createProjectGroupLoader, createProjectLoader } from "./metadata"
 
 export const LOGGER = new NotLog4j("dpl") // duck's project loader, short-handed
+const PROJECTS = createProjectLoader()
+const PROJECT_GROUPS = createProjectGroupLoader()
+const LOADERS = [PROJECTS, PROJECT_GROUPS]
 
-export class DuckProjectLoader {
-  constructor(protected readonly targetPath: string) {}
+export async function scanForCandidate(targetPath: string) {
+  LOGGER.info("duck's project loader is scanning for duck project candidate at", formatPath(targetPath)) // not a (neo)forge reference :)
 
-  public async scanForCandidate() {
-    LOGGER.info("duck's project loader is scanning for duck project candidate at", formatPath(this.targetPath)) // not a (neo)forge reference :)
-  
-    const allProjectsName = fs.readdirSync(this.targetPath)
-    const canidate = [] as IProjectStat[]
-  
-    for (const projectFolderName of allProjectsName) {
-      const PROJECT_BASE_PATH = `${this.targetPath}/${projectFolderName}`
-      const DOT_DUCK_FOLDER = `${PROJECT_BASE_PATH}/.duck` as const
-      if (!isFileOrDirExist(DOT_DUCK_FOLDER)) {
-        LOGGER.info(".duck metadata folder does not exist for", formatPath(PROJECT_BASE_PATH), ". Skipping...")
-        continue
-      }
-  
-      LOGGER.info("Found project candidate:", formatPath(PROJECT_BASE_PATH))
-  
-      let assetsPath: string | null = null
-      if (isFileOrDirExist(`${DOT_DUCK_FOLDER}/assets`)) {
-        assetsPath = `${DOT_DUCK_FOLDER}/assets`
-      }
-  
-      const projectMetadata = readProjectMetadata(DOT_DUCK_FOLDER)
-      if (projectMetadata === null) continue
-  
-      const stat: IProjectStat = {
-        ...projectMetadata,
-        longDescription: getProjectLongDescription(DOT_DUCK_FOLDER),
-        pages: parseOtherMarkdownPage(DOT_DUCK_FOLDER),
-        totalCommits: await getTotalCommits(PROJECT_BASE_PATH),
-        assetsPath
-      }
-  
-      appendLicenceUrl(stat, projectMetadata)
-  
-      canidate.push(stat)
+  const allProjectsName = fs.readdirSync(targetPath)
+
+  for (const projectFolderName of allProjectsName) {
+    console.log("")
+    LOGGER.info("Currently looking for:", formatPath(projectFolderName))
+    
+    const PROJECT_BASE_PATH = `${targetPath}/${projectFolderName}`
+    const DOT_DUCK_FOLDER = `${PROJECT_BASE_PATH}/.duck` as const
+    if (!isFileOrDirExist(DOT_DUCK_FOLDER)) {
+      LOGGER.info("|  .duck metadata folder does not exist for", formatPath(PROJECT_BASE_PATH), ". Skipping...")
+      continue
     }
-  
-    LOGGER.info("Found", canidate.length, "candidate", "\n\n")
+    
+    LOGGER.info("Found project candidate:", formatPath(PROJECT_BASE_PATH))
 
-    throw "panic"
-  
-    return canidate
+    const PROJECT_METADATA_PATH = `${DOT_DUCK_FOLDER}/metadata.json` as const
+    if (!isFileOrDirExist(PROJECT_METADATA_PATH)) {
+      LOGGER.warn("|  missing project metadata.json on .duck folder at", PROJECT_METADATA_PATH, ". Skipping...")
+      continue
+    }
+
+    const metadata = readFile(PROJECT_METADATA_PATH).asJSON<any>()
+    for (const loader of LOADERS) {
+      const projectMetadata = loader.parse(metadata)
+      if (projectMetadata) {
+        await loader.commit(PROJECT_BASE_PATH, DOT_DUCK_FOLDER, projectMetadata as any)
+      } else {
+        LOGGER.warn("|  Not committing changes into", loader.name)
+      }
+    }
   }
+
+  LOGGER.info("Found", PROJECTS.candidate.length, "project(s) candidate,", PROJECT_GROUPS.candidate.length, "group(s) candidate.\n\n")
+  
+  throw "stop"
 }

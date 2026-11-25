@@ -16,7 +16,7 @@ export const ProjectMetadata = z.object({
   licence: z.array(z.object({
     name: nonEmptyString().or(z.literal(null)),
     why: nonEmptyString().optional()
-  }))
+  })).optional()
 }, "Project metadata must be an object")
 
 export const ProjectGroupMetadata = z.object({
@@ -25,7 +25,7 @@ export const ProjectGroupMetadata = z.object({
   description: nonEmptyString(),
   icon: nonEmptyString(),
   banner: nonEmptyString().optional(),
-  Children: z.array(z.string())
+  children: z.array(z.string())
 }, "Project group metadata must be an object")
 
 export type ProjectMetadataSchema = z.infer<typeof ProjectMetadata>

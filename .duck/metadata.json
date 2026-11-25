@@ -5,8 +5,7 @@
   "type": "public",
   "status": "active",
   "licence": [{
-    "name": "MIT",
-    "why": ""
+    "name": "MIT"
   }],
   "icon": "duck-spinning.gif",
   "repoUrl": "https://github.com/lilunderDuck/projects"

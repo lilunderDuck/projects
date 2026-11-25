@@ -1,6 +1,8 @@
-import { ShellExec } from "../utils"
+import { formatPath, ShellExec } from "../utils"
+import { LOGGER } from "./discovery"
 
 export async function getTotalCommits(projectFolderPath: string) {
+  LOGGER.info("|  Getting total commits from", formatPath(projectFolderPath))
   return new ShellExec<number>(["cd", projectFolderPath, "&&", "git", "rev-list", "--count", "HEAD"])
     .getAsInt()
     .orElseDefault(0)
