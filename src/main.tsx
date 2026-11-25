@@ -68,14 +68,8 @@ await loader.render(async(metadata) => {
     LOGGER.info("Copy assets from", formatPath(metadata.assetsPath))
     copyDir(metadata.assetsPath, `${outputFolder}/assets`)
   }
-
-  if (metadata.projectType === ProjectType.GROUP) {
-    return
-  } // a little hacked workaround
   
   const PAGE_OPTIONS = { basePath: ".." } as IRenderHtmlOption
-  await render(<ProjectPage {...metadata} />, `./docs/${metadata.id}/index.html`, PAGE_OPTIONS)
-  
   for (const subPage of metadata.pages) {
     const PAGE_FILE_NAME = path.basename(subPage.path).replace(".md", ".html")
     await render(
@@ -84,6 +78,8 @@ await loader.render(async(metadata) => {
       PAGE_OPTIONS
     )
   }
+  
+  await render(<ProjectPage {...metadata} />, `./docs/${metadata.id}/index.html`, PAGE_OPTIONS)
 })
 
 await render((

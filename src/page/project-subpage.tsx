@@ -1,6 +1,6 @@
 import { BackToHomeButton, MarkdownText, page__rootStyle, ProjectHeader, ProjectSection, scrollbar, scrollbar__invs, scrollbar__vertical } from "../components"
 import { css } from "../core"
-import type { IProjectStat } from "../api"
+import type { AnyProjectStat } from "../api"
 import { GLOBAL_PROJECT_PAGE_INLINE_PADDING } from "../main"
 
 const page__main = css`
@@ -8,8 +8,8 @@ const page__main = css`
 `
 
 export default function ProjectSubpage(props: {
-  metadata: IProjectStat,
-  page: IProjectStat["pages"][0]
+  metadata: AnyProjectStat,
+  page: AnyProjectStat["pages"][0]
 }) {
   return (
     <>

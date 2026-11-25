@@ -1,6 +1,6 @@
-import { MarkdownText, scrollbar, scrollbar__invs, scrollbar__vertical, page__rootStyle, ProjectHeader, ProjectSection, ProjectStatTable, BackToHomeButton, Show } from "../components"
+import { MarkdownText, scrollbar, scrollbar__invs, scrollbar__vertical, page__rootStyle, ProjectHeader, ProjectSection, ProjectStatTable, BackToHomeButton, Show, ProjectItem, For } from "../components"
 import { css } from "../core"
-import type { IProjectStat, ProjectMetadataSchema } from "../api"
+import { ProjectType, type AnyProjectStat, type IProjectGroupStat, type IProjectStat, type ProjectMetadataSchema } from "../api"
 import { GLOBAL_PROJECT_PAGE_INLINE_PADDING } from "../main"
 
 const page__main = css`
@@ -14,7 +14,7 @@ const page__section = css`
   }
 `
 
-export default function ProjectPage(props: ProjectMetadataSchema & IProjectStat) {
+export default function ProjectPage(props: AnyProjectStat) {
   return (
     <>
       <BackToHomeButton />
@@ -28,9 +28,20 @@ export default function ProjectPage(props: ProjectMetadataSchema & IProjectStat)
               </MarkdownText>
             </ProjectSection>
           </Show>
-          <ProjectSection name="Project stats" class={page__section}>
-            <ProjectStatTable {...props} />
-          </ProjectSection>
+          <Show when={props.projectType === ProjectType.PROJECT}>
+            <ProjectSection name="Project stats" class={page__section}>
+              <ProjectStatTable {...props as IProjectStat} />
+            </ProjectSection>
+          </Show>
+          <Show when={props.projectType === ProjectType.GROUP}>
+            <ProjectSection name="This group consist of..." class={page__section}>
+              <For each={(props as IProjectGroupStat).projects}>
+                {(it, index) => (
+                  <ProjectItem {...it} index={index + 1} />
+                )}
+              </For>
+            </ProjectSection>
+          </Show>
         </main>
       </div>
     </>

@@ -1,6 +1,6 @@
 import { MarkdownText, Show } from "."
 import { css } from "../core"
-import type { IProjectStat } from "../api"
+import type { AnyProjectStat, IProjectStat } from "../api"
 import { GLOBAL_PROJECT_PAGE_INLINE_PADDING } from "../main"
 
 const header__root = css`
@@ -56,7 +56,7 @@ const header__bannerImage = css`
   object-fit: cover;
 `
 
-export function ProjectHeader(props: IProjectStat) {
+export function ProjectHeader(props: AnyProjectStat) {
   return (
     <header class={header__root}>
       <Show when={props.banner} fallback={
