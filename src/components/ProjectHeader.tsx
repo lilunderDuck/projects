@@ -1,6 +1,6 @@
-import { MarkdownText, Show } from "."
+import { MarkdownText, Show, Tag } from "."
 import { css } from "../core"
-import type { AnyProjectStat, IProjectStat } from "../api"
+import { ProjectType, type AnyProjectStat, type IProjectStat } from "../api"
 import { GLOBAL_PROJECT_PAGE_INLINE_PADDING } from "../main"
 
 const header__root = css`
@@ -22,6 +22,12 @@ const header__headerImgBorder = css`
 const header__title = css`
   font-size: 2.3rem;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  & > div {
+    font-size: 1.8rem;
+  }
 `
 
 const header__headerShadow = css`
@@ -68,7 +74,12 @@ export function ProjectHeader(props: AnyProjectStat) {
       </Show>
       <div class={header__headerShadow} />
       <div class={`${header__titleWrap} ${GLOBAL_PROJECT_PAGE_INLINE_PADDING}`}>
-        <span class={header__title}>{props.title}</span>
+        <span class={header__title}>
+          {props.title}
+          <Show when={props.projectType === ProjectType.GROUP}>
+            <Tag bgColor="var(--lavender)">group</Tag>
+          </Show>
+        </span>
         <MarkdownText>
           {props.description}
         </MarkdownText>
