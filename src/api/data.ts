@@ -42,11 +42,11 @@ export interface IBaseProjectStat {
   assetsPath: string | null
   longDescription: string
   projectType: ProjectType
+  pages: { path: string, content: string }[]
 }
 
 export interface IProjectStat extends IBaseProjectStat, ProjectMetadataSchema {
   totalCommits: number
-  pages: { path: string, content: string }[]
   projectType: ProjectType.PROJECT
 }
 

@@ -7,9 +7,9 @@ import HomePage, { HOME_PAGE_CLASSES } from "./page"
 import ProjectPage from "./page/project"
 import ProjectSubpage from "./page/project-subpage"
 // ...
-import { copyDir } from "./utils"
+import { copyDir, formatPath } from "./utils"
 import "./codeBlockBootstrap"
-import { ProjectLoader } from "./project-discovery"
+import { LOGGER, ProjectLoader } from "./project-discovery"
 
 export const GLOBAL_PROJECT_PAGE_INLINE_PADDING = HASH_RANDOMIZER.next()
 export const HOME_PAGE_TITLE_HEADER = HASH_RANDOMIZER.next()
@@ -65,6 +65,7 @@ await loader.scanForCandidate()
 await loader.render(async(metadata) => {
   const outputFolder = `./docs/${metadata.id}`
   if (metadata.assetsPath) {
+    LOGGER.info("Copy assets from", formatPath(metadata.assetsPath))
     copyDir(metadata.assetsPath, `${outputFolder}/assets`)
   }
 
