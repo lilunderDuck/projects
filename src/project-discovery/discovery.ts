@@ -1,16 +1,16 @@
 import fs from "node:fs"
-import { formatPath, isFileOrDirExist, NotLog4j, readFile } from "../utils"
-import { createProjectGroupLoader, createProjectLoader } from "./metadata"
+import { formatPath, isFileOrDirExist, NotLog4j } from "../utils"
+import { readProjectMetadata } from "./metadata"
+import { ProjectType } from "../api"
 
 export const LOGGER = new NotLog4j("dpl") // duck's project loader, short-handed
-const PROJECTS = createProjectLoader()
-const PROJECT_GROUPS = createProjectGroupLoader()
-const LOADERS = [PROJECTS, PROJECT_GROUPS]
 
 export async function scanForCandidate(targetPath: string) {
   LOGGER.info("duck's project loader is scanning for duck project candidate at", formatPath(targetPath)) // not a (neo)forge reference :)
 
   const allProjectsName = fs.readdirSync(targetPath)
+  const PROJECTS_CANDIDATE = []
+  const PROJECT_GROUPS_CANDIDATE = []
 
   for (const projectFolderName of allProjectsName) {
     console.log("")
@@ -31,18 +31,19 @@ export async function scanForCandidate(targetPath: string) {
       continue
     }
 
-    const metadata = readFile(PROJECT_METADATA_PATH).asJSON<any>()
-    for (const loader of LOADERS) {
-      const projectMetadata = loader.parse(metadata)
-      if (projectMetadata) {
-        await loader.commit(PROJECT_BASE_PATH, DOT_DUCK_FOLDER, projectMetadata as any)
-      } else {
-        LOGGER.warn("|  Not committing changes into", loader.name)
-      }
+    const metadata = await readProjectMetadata(PROJECT_BASE_PATH, DOT_DUCK_FOLDER)
+    if (!metadata) {
+      continue
+    }
+
+    if (metadata.projectType === ProjectType.GROUP) {
+      PROJECT_GROUPS_CANDIDATE.push(metadata)
+    } else {
+      PROJECTS_CANDIDATE.push(metadata)
     }
   }
 
-  LOGGER.info("Found", PROJECTS.candidate.length, "project(s) candidate,", PROJECT_GROUPS.candidate.length, "group(s) candidate.\n\n")
+  LOGGER.info("Found", PROJECTS_CANDIDATE.length, "project(s) candidate,", PROJECT_GROUPS_CANDIDATE.length, "group(s) candidate.\n\n")
   
   throw "stop"
 }

@@ -1,6 +1,5 @@
 import * as z from "zod"
 import { nonEmptyString, unionOf } from "../utils"
-import { Children } from "react"
 
 type LicenceNameNone = null
 
@@ -31,8 +30,18 @@ export const ProjectGroupMetadata = z.object({
 export type ProjectMetadataSchema = z.infer<typeof ProjectMetadata>
 export type ProjectGroupMetadataSchema = z.infer<typeof ProjectGroupMetadata>
 
-export interface IProjectStat extends Omit<ProjectMetadataSchema, "licence"> {
+export const enum ProjectType {
+  PROJECT,
+  GROUP
+}
+
+export interface IBaseProjectStat<T extends ProjectType> {
+  assetsPath: string | null
   longDescription: string
+  projectType: T
+}
+
+export interface IProjectStat extends Omit<ProjectMetadataSchema, "licence">, IBaseProjectStat<ProjectType.PROJECT> {
   totalCommits: number
   licence?: {
     name: string | LicenceNameNone
@@ -40,5 +49,8 @@ export interface IProjectStat extends Omit<ProjectMetadataSchema, "licence"> {
     why?: string
   }[]
   pages: { path: string, content: string }[]
-  assetsPath: string | null
+}
+
+export interface IProjectGroupStat extends Omit<ProjectGroupMetadataSchema, "children">, IBaseProjectStat<ProjectType.GROUP> {
+  children: IProjectGroupStat[]
 }
