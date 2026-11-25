@@ -83,11 +83,6 @@ export function ProjectItem(props: ProjectMetadataSchema & { index: number }) {
               {props.status}
             </Tag>
           </Show>
-          {props.id.includes("toast") && (
-            <Tag bgColor={'var(--yellow)'}>
-              Baguette ecosystem
-            </Tag>
-          )}
           <Show when={props.id.startsWith("duck-project-index")}>
             <Tag bgColor={'var(--pink)'}>
               Duck's project index
