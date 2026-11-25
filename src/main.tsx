@@ -8,8 +8,8 @@ import ProjectPage from "./page/project"
 import ProjectSubpage from "./page/project-subpage"
 // ...
 import { copyDir, dplLogger } from "./utils"
-import { scanForProjectCandidate } from "./projectDiscovery"
 import "./codeBlockBootstrap"
+import { DuckProjectLoader } from "./project-discovery"
 
 export const GLOBAL_PROJECT_PAGE_INLINE_PADDING = HASH_RANDOMIZER.next()
 export const HOME_PAGE_TITLE_HEADER = HASH_RANDOMIZER.next()
@@ -65,7 +65,11 @@ const GLOBAL_PAGE_OPTIONS = {
   title: "Duck's project index"
 }
 
-const projectCanidate = await scanForProjectCandidate("D:/projects")
+const dpl = new DuckProjectLoader("D:/projects")
+
+await dpl.scanForCandidate()
+
+const projectCanidate = null as any
 
 dplLogger.info("begin rendering all pages...")
 await render((
