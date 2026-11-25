@@ -1,6 +1,6 @@
 import fs from "node:fs"
 import { formatPath, isFileOrDirExist, NotLog4j, readFile } from "../utils"
-import { ProjectGroupMetadata, ProjectMetadata, ProjectType, type AnyProject, type AnyProjectStat, type IBaseProjectStat, type IProjectGroupStat, type IProjectStat } from "../api"
+import { ProjectGroupMetadata, ProjectMetadata, ProjectType, type AnyProject, type AnyProjectStat, type IBaseProjectStat, type IProjectGroupStat, type IProjectStat, type ProjectGroupMetadataSchema } from "../api"
 import { getProjectLongDescription, parseOtherMarkdownPage } from "./markdownPages"
 import { getTotalCommits } from "./repoUtils"
 
@@ -60,7 +60,11 @@ export class ProjectLoader {
     return metadata
   }
 
-  protected async attachData(metadataRef: AnyProject & { __folderName: string }, baseFolderName: string) {
+  protected currentProjectGroup: ProjectGroupMetadataSchema | null = null
+  protected async attachData(
+    metadataRef: AnyProject & { __folderName: string }, 
+    baseFolderName: string
+  ) {
     LOGGER.info("Attaching additional data for found project candidate")
     const currentProjectPath = this.getProjectPath(metadataRef.__folderName, baseFolderName)
     const dotDuckPath = this.getDotDuckPath(metadataRef.__folderName, baseFolderName)
@@ -76,23 +80,44 @@ export class ProjectLoader {
       longDescription: getProjectLongDescription(dotDuckPath)
     } as IBaseProjectStat
 
-    if (metadataRef.type === "group") return {
-      ...metadataRef,
-      ...baseData,
-      pages: parseOtherMarkdownPage(dotDuckPath),
-      totalCommits: await getTotalCommits(currentProjectPath),
-      projects: await this.scanForProjectCandidate(currentProjectPath, metadataRef.__folderName) as IProjectStat[]
-    } as IProjectGroupStat
-    
-    return {
+    if (metadataRef.type === "group") {
+      this.currentProjectGroup = metadataRef as ProjectGroupMetadataSchema
+      const data = {
+        ...metadataRef,
+        ...baseData,
+        pages: parseOtherMarkdownPage(dotDuckPath),
+        totalCommits: await getTotalCommits(currentProjectPath),
+        projects: await this.scanForProjectCandidate(currentProjectPath, metadataRef.__folderName) as IProjectStat[]
+      } as IProjectGroupStat
+      this.currentProjectGroup = null
+      return data
+    }
+
+    const data = {
       ...metadataRef,
       ...baseData,
       pages: parseOtherMarkdownPage(dotDuckPath),
       totalCommits: await getTotalCommits(currentProjectPath),
       assetsPath,
       projectType: ProjectType.PROJECT,
-      longDescription: getProjectLongDescription(dotDuckPath)
+      longDescription: getProjectLongDescription(dotDuckPath),
     } as IProjectStat
+
+    if (data.icon === "[USE_PARENT_ICON]" && this.currentProjectGroup?.icon) {
+      data.icon = `assets/${this.currentProjectGroup.icon}`
+      LOGGER.info("|  Attached icon from parent ->", data.icon)
+    } else {
+      data.icon = `${metadataRef.id}/assets/${metadataRef.icon}`
+    }
+    
+    if (data.banner === "[USE_PARENT_ICON]" && this.currentProjectGroup?.banner) {
+      data.banner = `assets/${this.currentProjectGroup.banner}`
+      LOGGER.info("|  Attached banner from parent ->", data.banner)
+    } else {
+      data.banner = metadataRef.banner ? `${metadataRef.id}/assets/${metadataRef.banner}` : undefined
+    }
+
+    return data
   }
 
   public async render(page: (metadata: AnyProjectStat) => Promise<void>) {

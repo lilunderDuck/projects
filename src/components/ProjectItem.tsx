@@ -61,7 +61,7 @@ export function ProjectItem(props: ProjectMetadataSchema & { index: number }) {
         <div class={item__indexNumber}>
           {props.index}
         </div>
-        <img loading="lazy" height={68} class={item__icon} draggable={false} src={`./${props.id}/assets/${props.icon}`} alt="">
+        <img loading="lazy" height={68} class={item__icon} draggable={false} src={props.icon} alt="">
           {/* ... */}
         </img>
       </div>
