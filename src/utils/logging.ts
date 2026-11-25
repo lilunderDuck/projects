@@ -76,5 +76,3 @@ export class NotLog4j {
     process.exit(1)
   }
 }
-
-export const dplLogger = new NotLog4j("DPL")

@@ -1,4 +1,5 @@
-import { dplLogger, getEverythingFrom, readFile } from "../utils";
+import { getEverythingFrom, readFile } from "../utils";
+import { LOGGER } from "./discovery";
 
 export function parseOtherMarkdownPage(dotDuckFolderPath: string) {
   return getEverythingFrom(dotDuckFolderPath)
@@ -18,7 +19,7 @@ export function getProjectLongDescription(dotDuckFolderPath: string) {
   try {
     return readFile(PROJECT_LONG_DESCRIPTION_PATH).asText()
   } catch(error) {
-    dplLogger.info("Could not get the project long description from:", PROJECT_LONG_DESCRIPTION_PATH)
+    LOGGER.info("Could not get the project long description from:", PROJECT_LONG_DESCRIPTION_PATH)
     return ''
   }
 }

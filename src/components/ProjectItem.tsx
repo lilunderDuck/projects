@@ -1,6 +1,6 @@
 import { MarkdownText, Show, Tag } from "."
 import { css } from "../core"
-import { PROJECT_STATUS_REGISTRY, PROJECT_TYPE_COLOR_MAPPING, type IProjectStat } from "../api"
+import { PROJECT_STATUS_REGISTRY, PROJECT_TYPE_COLOR_MAPPING, type AnyProject, type IProjectStat, type ProjectMetadataSchema } from "../api"
 
 const item__root = css`
   list-style: none;
@@ -54,7 +54,7 @@ const item__tagList = css`
   flex-wrap: wrap;
 `
 
-export function ProjectItem(props: IProjectStat & { index: number }) {
+export function ProjectItem(props: ProjectMetadataSchema & { index: number }) {
   return (
     <li class={item__root}>
       <div class={item__indexWrap}>
@@ -78,9 +78,11 @@ export function ProjectItem(props: IProjectStat & { index: number }) {
           <Tag bgColor={PROJECT_TYPE_COLOR_MAPPING.getOrElseThrow(props.type)}>
             {props.type}
           </Tag>
-          <Tag bgColor={PROJECT_STATUS_REGISTRY.getOrElseThrow(props.status).color}>
-            {props.status}
-          </Tag>
+          <Show when={props.status}>
+            <Tag bgColor={PROJECT_STATUS_REGISTRY.getOrElseThrow(props.status).color}>
+              {props.status}
+            </Tag>
+          </Show>
           {props.id.includes("toast") && (
             <Tag bgColor={'var(--yellow)'}>
               Baguette ecosystem

@@ -1,7 +1,7 @@
-import { For, scrollbar, scrollbar__invs, scrollbar__vertical, SpinningCube } from "../components"
+import { For, scrollbar, scrollbar__invs, scrollbar__vertical, Show, SpinningCube } from "../components"
 import { HomeHeader, ProjectItem } from "../components"
 import { css } from "../core"
-import type { IProjectStat } from "../api"
+import type { AnyProject, IProjectStat } from "../api"
 import { GLOBAL_PROJECT_PAGE_INLINE_PADDING } from "../main"
 
 const page__root = css`
@@ -40,14 +40,18 @@ const page__pala = css`
 
 export const HOME_PAGE_CLASSES = `${page__root} ${scrollbar} ${scrollbar__vertical} ${scrollbar__invs}`
 
-export default function HomePage(props: { buildDate: string, projectList: IProjectStat[] }) {
+export default function HomePage(props: { buildDate: string, projectList: AnyProject[] }) {
   return (
     <>
       <HomeHeader buildDate={props.buildDate} />
       <main class={`${page__mainContent} ${GLOBAL_PROJECT_PAGE_INLINE_PADDING}`}>
         <ul class={page__projectList}>
           <For each={props.projectList}>
-            {(it, index) => <ProjectItem {...it} index={index + 1} />}
+            {(it, index) => (
+              <Show when={it.type === "group"} fallback={
+                <ProjectItem {...it} index={index + 1} />
+              }></Show>
+            )}
           </For>
         </ul>
       </main>

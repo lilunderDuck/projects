@@ -1,15 +1,15 @@
 import path from "node:path"
 // ...
-import { dumpCSS, HASH_RANDOMIZER, minifyCSSFromFile, RANDOMIZER, render } from "./core"
+import { dumpCSS, HASH_RANDOMIZER, minifyCSSFromFile, render } from "./core"
 import { CURRENT_BUILD_DATE } from "./api"
 // ...
 import HomePage, { HOME_PAGE_CLASSES } from "./page"
 import ProjectPage from "./page/project"
 import ProjectSubpage from "./page/project-subpage"
 // ...
-import { copyDir, dplLogger } from "./utils"
+import { copyDir } from "./utils"
 import "./codeBlockBootstrap"
-import { scanForCandidate } from "./project-discovery"
+import { ProjectLoader } from "./project-discovery"
 
 export const GLOBAL_PROJECT_PAGE_INLINE_PADDING = HASH_RANDOMIZER.next()
 export const HOME_PAGE_TITLE_HEADER = HASH_RANDOMIZER.next()
@@ -41,7 +41,6 @@ const GLOBAL_STYLE = `
     }
   }
 
-
   .${GLOBAL_PROJECT_PAGE_INLINE_PADDING} { padding-inline: 4rem; }
   .${HOME_PAGE_TITLE_HEADER} {
     font-size: 3.5rem;
@@ -65,40 +64,39 @@ const GLOBAL_PAGE_OPTIONS = {
   title: "Duck's project index"
 }
 
-await scanForCandidate("D:/projects")
+const loader = new ProjectLoader("D:/projects")
+loader.scanForCandidate()
+await loader.attachData()
 
-const projectCanidate = null as any
+loader.render(async(metadata, attachData) => {
+  if (!attachData) return
 
-dplLogger.info("begin rendering all pages...")
-await render((
-  <HomePage 
-    buildDate={CURRENT_BUILD_DATE} 
-    projectList={projectCanidate} 
-  />
-), "./docs/index.html", { ...GLOBAL_PAGE_OPTIONS, bodyClass: HOME_PAGE_CLASSES })
-
-for (const stat of projectCanidate) {
-  const outputFolder = `./docs/${stat.id}`
-  if (stat.assetsPath) {
-    copyDir(stat.assetsPath, `${outputFolder}/assets`)
+  const outputFolder = `./docs/${metadata.id}`
+  if (attachData.assetsPath) {
+    copyDir(attachData.assetsPath, `${outputFolder}/assets`)
   }
-
+  
   const pageOptions = { ...GLOBAL_PAGE_OPTIONS, basePath: ".." }
-  await render(<ProjectPage {...stat} />, `./docs/${stat.id}/index.html`, pageOptions)
-
-  for (const subPage of stat.pages) {
+  const stat = { ...metadata, ...attachData }
+  await render(<ProjectPage {...stat} />, `./docs/${metadata.id}/index.html`, pageOptions)
+  
+  for (const subPage of attachData.pages) {
     const PAGE_FILE_NAME = path.basename(subPage.path).replace(".md", ".html")
     await render(
       <ProjectSubpage page={subPage} metadata={stat} />, 
-      `./docs/${stat.id}/${PAGE_FILE_NAME}`, 
+      `./docs/${metadata.id}/${PAGE_FILE_NAME}`, 
       pageOptions
     )
   }
-}
+})
 
-dplLogger.info("Dumping all CSS...")
+await render((
+  <HomePage 
+    buildDate={CURRENT_BUILD_DATE} 
+    projectList={loader.candidate().values().toArray()} 
+  />
+), "./docs/index.html", { ...GLOBAL_PAGE_OPTIONS, bodyClass: HOME_PAGE_CLASSES })
+
 dumpCSS("./docs/assets", GLOBAL_STYLE)
 
 minifyCSSFromFile("./src/assets/base.css", "./docs/assets/base.css")
-
-dplLogger.info("Done :)")
