@@ -1,6 +1,6 @@
-import { For, Tag } from "../components"
+import { For, Tag } from "."
 import { css } from "../core"
-import { PROJECT_STATUS_REGISTRY, PROJECT_TYPE_COLOR_MAPPING, type IProjectStat } from "../data"
+import { PROJECT_STATUS_REGISTRY, PROJECT_TYPE_COLOR_MAPPING, type IProjectStat } from "../api"
 
 const table__table = css`
   width: 100%;

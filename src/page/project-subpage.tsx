@@ -1,6 +1,6 @@
 import { BackToHomeButton, MarkdownText, page__rootStyle, ProjectHeader, ProjectSection, scrollbar, scrollbar__invs, scrollbar__vertical } from "../components"
 import { css } from "../core"
-import type { IProjectStat } from "../data"
+import type { IProjectStat } from "../api"
 import { GLOBAL_PROJECT_PAGE_INLINE_PADDING } from "../main"
 
 const page__main = css`

@@ -1,6 +1,6 @@
-import { MarkdownText, Show, Tag } from "../components"
+import { MarkdownText, Show, Tag } from "."
 import { css } from "../core"
-import { PROJECT_STATUS_REGISTRY, PROJECT_TYPE_COLOR_MAPPING, type IProjectStat } from "../data"
+import { PROJECT_STATUS_REGISTRY, PROJECT_TYPE_COLOR_MAPPING, type IProjectStat } from "../api"
 
 const item__root = css`
   list-style: none;

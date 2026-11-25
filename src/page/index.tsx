@@ -1,7 +1,7 @@
 import { For, scrollbar, scrollbar__invs, scrollbar__vertical, SpinningCube } from "../components"
 import { HomeHeader, ProjectItem } from "../components"
 import { css } from "../core"
-import type { IProjectStat } from "../data"
+import type { IProjectStat } from "../api"
 import { GLOBAL_PROJECT_PAGE_INLINE_PADDING } from "../main"
 
 const page__root = css`

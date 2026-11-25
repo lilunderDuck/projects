@@ -1,4 +1,4 @@
-import { Show } from "../components"
+import { Show } from "."
 import { css } from "../core"
 
 const section__root = css`

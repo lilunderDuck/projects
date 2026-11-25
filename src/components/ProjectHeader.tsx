@@ -1,6 +1,6 @@
-import { BsCaretLeftFill, MarkdownText, Show } from "../components"
+import { MarkdownText, Show } from "."
 import { css } from "../core"
-import type { IProjectStat } from "../data"
+import type { IProjectStat } from "../api"
 import { GLOBAL_PROJECT_PAGE_INLINE_PADDING } from "../main"
 
 const header__root = css`

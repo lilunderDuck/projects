@@ -1,7 +1,7 @@
 import path from "node:path"
 // ...
 import { dumpCSS, HASH_RANDOMIZER, minifyCSSFromFile, RANDOMIZER, render } from "./core"
-import { CURRENT_BUILD_DATE } from "./data"
+import { CURRENT_BUILD_DATE } from "./api"
 // ...
 import HomePage, { HOME_PAGE_CLASSES } from "./page"
 import ProjectPage from "./page/project"
