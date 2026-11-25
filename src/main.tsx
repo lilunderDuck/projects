@@ -7,7 +7,7 @@ import HomePage, { HOME_PAGE_CLASSES } from "./page"
 import ProjectPage from "./page/project"
 import ProjectSubpage from "./page/project-subpage"
 // ...
-import { copyDir, ensureDirExist, formatPath } from "./utils"
+import { copyDir, formatPath } from "./utils"
 import "./codeBlockBootstrap"
 import { LOGGER, ProjectLoader } from "./project-discovery"
 
